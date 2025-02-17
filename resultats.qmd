@@ -1,0 +1,30 @@
+---
+title: "Résultats et Comparaison"
+format: html
+---
+
+# Comparaison des performances des modèles
+
+## **Tableau des précisions**
+```{python}
+import matplotlib.pyplot as plt
+
+# Stocker les précisions
+scores = {
+    "KNN": accuracy_score(y_test, y_pred_knn),
+    "CART": accuracy_score(y_test, y_pred_cart),
+    "Forêt Aléatoire": accuracy_score(y_test, y_pred_rf),
+    "Régression Multinomiale": accuracy_score(y_test, y_pred_multinomial),
+    "Réseau de Neurones": accuracy_score(y_test, y_pred_mlp),
+    "LDA": accuracy_score(y_test, y_pred_lda),
+    "QDA": accuracy_score(y_test, y_pred_qda),
+}
+
+# Affichage sous forme de graphique
+plt.figure(figsize=(10,5))
+plt.bar(scores.keys(), scores.values(), color='skyblue')
+plt.ylabel("Précision")
+plt.xlabel("Modèle")
+plt.title("Comparaison des modèles de classification")
+plt.xticks(rotation=45)
+plt.show()

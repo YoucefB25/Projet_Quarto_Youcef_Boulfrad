@@ -1,0 +1,74 @@
+
+---
+
+## **3️⃣ Implémentation des modèles (`classification.qmd`)**
+Ajoute une section par modèle dans **`classification.qmd`**.
+
+### **📌 K-Nearest Neighbors (KNN)**
+```{python}
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Séparation des données
+X_train, X_test, y_train, y_test = train_test_split(df.drop(columns=['Classe']), df['Classe'], test_size=0.2, random_state=42)
+
+# Initialisation et entraînement du modèle
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+# Prédiction et évaluation
+y_pred_knn = knn.predict(X_test)
+print("Précision KNN :", accuracy_score(y_test, y_pred_knn))
+
+from sklearn.tree import DecisionTreeClassifier
+
+cart = DecisionTreeClassifier(random_state=42)
+cart.fit(X_train, y_train)
+
+y_pred_cart = cart.predict(X_test)
+print("Précision Arbre CART :", accuracy_score(y_test, y_pred_cart))
+
+from sklearn.ensemble import RandomForestClassifier
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+
+y_pred_rf = rf.predict(X_test)
+print("Précision Forêt Aléatoire :", accuracy_score(y_test, y_pred_rf))
+
+
+from sklearn.linear_model import LogisticRegression
+
+reg_multinomial = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=500)
+reg_multinomial.fit(X_train, y_train)
+
+y_pred_multinomial = reg_multinomial.predict(X_test)
+print("Précision Régression Multinomiale :", accuracy_score(y_test, y_pred_multinomial))
+
+from sklearn.neural_network import MLPClassifier
+
+mlp = MLPClassifier(hidden_layer_sizes=(50,), max_iter=500, random_state=42)
+mlp.fit(X_train, y_train)
+
+y_pred_mlp = mlp.predict(X_test)
+print("Précision Réseau de Neurones :", accuracy_score(y_test, y_pred_mlp))
+
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+lda = LinearDiscriminantAnalysis()
+lda.fit(X_train, y_train)
+
+y_pred_lda = lda.predict(X_test)
+print("Précision LDA :", accuracy_score(y_test, y_pred_lda))
+
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+
+qda = QuadraticDiscriminantAnalysis()
+qda.fit(X_train, y_train)
+
+y_pred_qda = qda.predict(X_test)
+print("Précision QDA :", accuracy_score(y_test, y_pred_qda))
+
+

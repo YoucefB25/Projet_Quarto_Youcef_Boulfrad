@@ -1,0 +1,21 @@
+---
+title: "Jeu de Données - Vin"
+format: html
+---
+
+# Présentation du jeu de données 🍷
+
+Nous utilisons le dataset **Wine** de scikit-learn, qui contient **178 observations** et **13 variables** sur des vins issus de trois cépages.
+
+## **Chargement des données**
+```{python}
+import pandas as pd
+from sklearn.datasets import load_wine
+
+# Charger les données
+data = load_wine()
+df = pd.DataFrame(data.data, columns=data.feature_names)
+df['Classe'] = data.target  # Ajout de la colonne des classes
+
+# Aperçu des données
+df.head()

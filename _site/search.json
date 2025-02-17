@@ -12,5 +12,54 @@
     "title": "Mon Premier Document Quarto",
     "section": "",
     "text": "Voici un exemple :\nprint(“Hello, Quarto depuis Ubuntu !”)"
+  },
+  {
+    "objectID": "classification.html",
+    "href": "classification.html",
+    "title": "Méthodes de Classification",
+    "section": "",
+    "text": "Dans cette section, nous allons voir différentes approches pour classifier des données.\n\n\nfrom sklearn.naive_bayes import GaussianNB from sklearn.model_selection import train_test_split from sklearn.metrics import accuracy_score from sklearn.datasets import load_wine import pandas as pd"
+  },
+  {
+    "objectID": "classification.html#bayésien-naïf",
+    "href": "classification.html#bayésien-naïf",
+    "title": "Méthodes de Classification",
+    "section": "",
+    "text": "from sklearn.naive_bayes import GaussianNB from sklearn.model_selection import train_test_split from sklearn.metrics import accuracy_score from sklearn.datasets import load_wine import pandas as pd"
+  },
+  {
+    "objectID": "dataset.html",
+    "href": "dataset.html",
+    "title": "Jeu de Données - Vin",
+    "section": "",
+    "text": "Nous utilisons le dataset Wine de scikit-learn, qui contient 178 observations et 13 variables sur des vins issus de trois cépages.\n\n\nimport pandas as pd from sklearn.datasets import load_wine"
+  },
+  {
+    "objectID": "dataset.html#chargement-des-données",
+    "href": "dataset.html#chargement-des-données",
+    "title": "Jeu de Données - Vin",
+    "section": "",
+    "text": "import pandas as pd from sklearn.datasets import load_wine"
+  },
+  {
+    "objectID": "resultats.html",
+    "href": "resultats.html",
+    "title": "Résultats et Comparaison",
+    "section": "",
+    "text": "import matplotlib.pyplot as plt"
+  },
+  {
+    "objectID": "resultats.html#tableau-des-précisions",
+    "href": "resultats.html#tableau-des-précisions",
+    "title": "Résultats et Comparaison",
+    "section": "",
+    "text": "import matplotlib.pyplot as plt"
+  },
+  {
+    "objectID": "classification.html#implémentation-des-modèles-classification.qmd",
+    "href": "classification.html#implémentation-des-modèles-classification.qmd",
+    "title": "Séparation des données",
+    "section": "3️⃣ Implémentation des modèles (classification.qmd)",
+    "text": "3️⃣ Implémentation des modèles (classification.qmd)\nAjoute une section par modèle dans classification.qmd.\n\n📌 K-Nearest Neighbors (KNN)\nfrom sklearn.neighbors import KNeighborsClassifier from sklearn.model_selection import train_test_split from sklearn.metrics import accuracy_score"
   }
 ]

@@ -3,8 +3,14 @@ project:
   output-dir: _site
 
 website:
-  title: "Mon Site Quarto"
+  title: "Classification du vin"
   navbar:
     left:
       - href: index.qmd
         text: Accueil
+      - href: dataset.qmd
+        text: Jeu de données
+      - href: classification.qmd
+        text: Méthodes de classification
+      - href: resultats.qmd
+        text: Comparaison des modèles
