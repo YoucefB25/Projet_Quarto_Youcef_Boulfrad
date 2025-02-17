@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "mon_projet.html",
+    "href": "mon_projet.html",
+    "title": "Mon Premier Document Quarto",
+    "section": "",
+    "text": "Bienvenue dans mon premier document Quarto sur Ubuntu. 🎉\n\n\nVoici un exemple :\nprint(“Hello, Quarto depuis Ubuntu !”)"
+  },
+  {
+    "objectID": "mon_projet.html#un-peu-de-code-python",
+    "href": "mon_projet.html#un-peu-de-code-python",
+    "title": "Mon Premier Document Quarto",
+    "section": "",
+    "text": "Voici un exemple :\nprint(“Hello, Quarto depuis Ubuntu !”)"
+  }
+]

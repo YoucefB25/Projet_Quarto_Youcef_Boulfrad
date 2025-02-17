@@ -1,0 +1,16 @@
+---
+title: "Mon Premier Document Quarto"
+author: "Youcef"
+date: today
+format: html
+---
+
+# Introduction
+
+Bienvenue dans mon premier document Quarto sur Ubuntu. 🎉
+
+## Un peu de code Python
+
+Voici un exemple :
+```{python}
+print("Hello, Quarto depuis Ubuntu !")
