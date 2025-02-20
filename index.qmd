@@ -1,0 +1,9 @@
+---
+title: "Accueil"
+---
+
+# Bienvenue dans le Cours sur les Méthodes de Classification
+
+Ce cours couvre différentes méthodes de classification en machine learning en utilisant le dataset **Covertype**. Vous trouverez des explications théoriques, des exemples concrets en Python et des comparaisons de performances.
+
+Naviguez via le menu pour explorer chaque méthode de classification.

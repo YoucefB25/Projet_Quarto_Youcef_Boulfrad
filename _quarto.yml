@@ -1,0 +1,47 @@
+project:
+  type: website
+  title: "Cours : Méthodes de Classification"
+
+website:
+  navbar:
+    left:
+      - text: "Accueil"
+        href: index.qmd
+      - text: "Méthodes de Classification"
+        menu:
+          - text: "Préparation du dataset Covertype"
+            href: preparation_donnees_covertype.qmd
+          - text: "KNN"
+            href: knn.qmd
+          - text: "Arbre de Décision"
+            href: arbre_decision.qmd
+          - text: "Forêt Aléatoire"
+            href: foret_aleatoire.qmd
+          - text: "Régression Multinomiale"
+            href: regression_multinomiale.qmd
+          - text: "Réseau de Neurones"
+            href: reseau_neurones.qmd
+          - text : "Bayésien naïf"
+            href : bayesien_naif.qmd
+          - text: "Régression logistique binomiale OVA"
+            href: regression_logistique_ova.qmd
+          - text: "Régression logistique binomiale  OVO"
+            href: regression_logistique_ovo.qmd
+          - text: "LDA OVA"
+            href: lda_ova.qmd
+          - text: "LDA OVO"
+            href: lda_ovo.qmd
+          - text: "QDA OVA"
+            href: qda_ova.qmd
+          - text: "QDA OVO"
+            href: qda_ovo.qmd
+          - text: "SVM OVA"
+            href: svm_ova.qmd
+          - text: "SVM OVO"
+            href: svm_ovo.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 2

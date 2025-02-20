@@ -1,0 +1,91 @@
+---
+title: "Analyse Discriminante Quadratique - OVO"
+---
+
+# Analyse Discriminante Quadratique (QDA) - One-Versus-One (OVO)
+
+## Théorie
+L'**Analyse Discriminante Quadratique (QDA)** est une technique de classification qui, contrairement à LDA, permet aux classes d'avoir des **matrices de covariance différentes**. Cela le rend plus flexible mais peut aussi augmenter le risque de sur-apprentissage.
+
+L'approche **One-Versus-One (OVO)** consiste à entraîner un modèle pour chaque paire de classes, ce qui est utile lorsque les classes sont bien séparées.
+
+## Hyperparamètres
+Nous allons tester les hyperparamètres suivants :
+- **Régularisation (`reg_param`)** : contrôle la variance de la covariance estimée (valeurs entre `0` et `1`).
+- **Standardisation des données** : normalisation des features avant l'entraînement.
+
+## Exemple en Python
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.multiclass import OneVsOneClassifier
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Chargement des ensembles de données
+train_data = pd.read_csv('covertype_train.csv')
+val_data = pd.read_csv('covertype_val.csv')
+test_data = pd.read_csv('covertype_test.csv')
+
+# Préparation des données
+X_train = train_data.drop('Cover_Type', axis=1)
+y_train = train_data['Cover_Type']
+
+X_val = val_data.drop('Cover_Type', axis=1)
+y_val = val_data['Cover_Type']
+
+X_test = test_data.drop('Cover_Type', axis=1)
+y_test = test_data['Cover_Type']
+
+# Standardisation des données
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_val = scaler.transform(X_val)
+X_test = scaler.transform(X_test)
+
+# Recherche des meilleurs hyperparamètres
+reg_params = np.linspace(0, 1, 10)
+train_accuracies = []
+val_accuracies = []
+
+for reg_param in reg_params:
+    qda_ovo = OneVsOneClassifier(QuadraticDiscriminantAnalysis(reg_param=reg_param))
+    qda_ovo.fit(X_train, y_train)
+    
+    y_train_pred = qda_ovo.predict(X_train)
+    y_val_pred = qda_ovo.predict(X_val)
+    
+    train_accuracies.append(accuracy_score(y_train, y_train_pred))
+    val_accuracies.append(accuracy_score(y_val, y_val_pred))
+
+# Sélection du meilleur reg_param
+best_reg_param = reg_params[val_accuracies.index(max(val_accuracies))]
+print(f"Meilleur reg_param QDA (OVO): {best_reg_param}")
+
+# Affichage du graphique
+plt.figure(figsize=(8, 6))
+plt.plot(reg_params, train_accuracies, marker='o', linestyle='dashed', label='Train Accuracy')
+plt.plot(reg_params, val_accuracies, marker='s', linestyle='dashed', label='Validation Accuracy')
+plt.xlabel("Régularisation (reg_param)")
+plt.ylabel("Précision")
+plt.title("Impact de la régularisation sur la performance de QDA (OVO)")
+plt.legend()
+plt.show()
+
+# Modèle final avec le meilleur reg_param
+qda_ovo = OneVsOneClassifier(QuadraticDiscriminantAnalysis(reg_param=best_reg_param))
+qda_ovo.fit(X_train, y_train)
+y_test_pred = qda_ovo.predict(X_test)
+
+# Affichage de la matrice de confusion
+conf_matrix = confusion_matrix(y_test, y_test_pred)
+print("\nMatrice de confusion (OVO) :")
+print(conf_matrix)
+
+print("\nÉvaluation sur l'ensemble de test")
+print(classification_report(y_test, y_test_pred))
+```

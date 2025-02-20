@@ -1,0 +1,113 @@
+---
+title: "Réseau de Neurones - Classification"
+---
+
+# Réseau de Neurones (MLP) avec sortie Softmax
+
+## Théorie
+Un réseau de neurones multi-couches (**MLP - Multi-Layer Perceptron**) est un modèle d'apprentissage supervisé basé sur des couches de neurones artificiels. Il est particulièrement efficace pour la classification non linéaire.
+
+Dans notre cas, nous utilisons **une couche de sortie Softmax**, qui permet de normaliser les sorties du réseau en probabilités pour une classification multiclasses.
+
+## Hyperparamètres
+Lors de l'entraînement d'un réseau de neurones, plusieurs hyperparamètres influencent la performance :
+
+- **Taille du pas d'apprentissage (`learning_rate`)** : Déterminée automatiquement avec l'optimiseur Adam.
+- **Nombre de couches cachées et neurones par couche** : Influence la capacité d'apprentissage du modèle.
+- **Nombre d'époques (`epochs`)** : Nombre de fois que le modèle parcourt l'ensemble des données d'entraînement.
+- **Taille du batch (`batch_size`)** : Nombre d'exemples utilisés pour calculer une mise à jour des poids.
+
+Nous allons utiliser **Adam avec un taux d'apprentissage adaptatif**, ce qui signifie que le pas d'apprentissage s'ajustera automatiquement au fil des itérations.
+
+## Évaluation des performances
+Comme pour les autres modèles de classification, nous utilisons :
+
+- **Matrice de confusion** : Un tableau qui compare les classes réelles aux classes prédites. Chaque ligne représente une classe réelle et chaque colonne une classe prédite. Une bonne classification est indiquée par des valeurs élevées sur la diagonale principale, tandis que les erreurs de classification apparaissent en dehors de cette diagonale.
+
+- **Accuracy (Précision globale)** : Le pourcentage de prédictions correctes parmi l'ensemble des données. Elle est utile lorsque les classes sont équilibrées, mais peut être trompeuse si certaines classes sont largement majoritaires.
+
+- **Precision (Précision par classe)** : Pour une classe donnée, la précision mesure la proportion de prédictions correctes parmi toutes celles où le modèle a prédit cette classe. Une haute précision signifie que lorsqu'une classe est prédite, elle est souvent correcte.
+
+- **Recall (Rappel par classe)** : Le rappel mesure la proportion de vrais exemples d'une classe qui sont correctement détectés par le modèle. Une haute valeur signifie que le modèle détecte bien les échantillons appartenant à cette classe.
+
+- **F1-score** : Moyenne harmonique entre la précision et le rappel. Il équilibre ces deux mesures et est particulièrement utile lorsque les classes sont déséquilibrées.
+
+Une **moyenne macro** est utilisée pour donner un aperçu global des performances du modèle en attribuant un poids égal à chaque classe. Une **moyenne pondérée** (weighted avg) prend en compte la fréquence de chaque classe afin de refléter plus précisément la performance globale dans un contexte de classes déséquilibrées.
+
+## Exemple en Python
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow import keras
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Chargement des ensembles de données
+train_data = pd.read_csv('covertype_train.csv')
+val_data = pd.read_csv('covertype_val.csv')
+test_data = pd.read_csv('covertype_test.csv')
+
+# Préparation des données
+X_train = train_data.drop('Cover_Type', axis=1)
+y_train = train_data['Cover_Type'] - 1  # Ajustement des labels pour correspondre à l'indexation Python
+
+X_val = val_data.drop('Cover_Type', axis=1)
+y_val = val_data['Cover_Type'] - 1
+
+X_test = test_data.drop('Cover_Type', axis=1)
+y_test = test_data['Cover_Type'] - 1
+
+# Normalisation des données
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_val = scaler.transform(X_val)
+X_test = scaler.transform(X_test)
+
+# Définition du modèle
+model = keras.Sequential([
+    keras.layers.Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
+    keras.layers.Dense(64, activation='relu'),
+    keras.layers.Dense(len(set(y_train)), activation='softmax')
+])
+
+# Utilisation d'Adam avec un pas d'apprentissage adaptatif
+optimizer = keras.optimizers.Adam()
+model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Entraînement du modèle
+history = model.fit(X_train, y_train, epochs=100, validation_data=(X_val, y_val), batch_size=32, verbose=0)
+
+# Détermination de la meilleure époque
+best_epoch = history.history['val_accuracy'].index(max(history.history['val_accuracy'])) + 1
+best_val_acc = max(history.history['val_accuracy'])
+
+# Affichage des courbes d'entraînement
+plt.figure(figsize=(8, 6))
+plt.plot(range(1, 101), history.history['accuracy'], label='Train Accuracy')
+plt.plot(range(1, 101), history.history['val_accuracy'], label='Validation Accuracy')
+plt.axvline(best_epoch, color='r', linestyle='--', label=f'Best Epoch: {best_epoch}')
+plt.xlabel("Époques")
+plt.ylabel("Taux de bonnes prédictions")
+plt.title("Optimisation du modèle de réseau de neurones")
+plt.legend()
+plt.show()
+
+# Ré-entraîner le modèle avec la meilleure époque
+model.fit(X_train, y_train, epochs=best_epoch, batch_size=32, verbose=0)
+
+# Évaluation sur l'ensemble de test
+y_test_pred = model.predict(X_test)
+y_test_pred_classes = y_test_pred.argmax(axis=1)
+
+# Affichage de la matrice de confusion
+conf_matrix = confusion_matrix(y_test, y_test_pred_classes)
+print(f"\nMeilleure époque : **{best_epoch}** avec une précision de validation de **{best_val_acc:.4f}**")
+print("\nMatrice de confusion (les lignes représentent les vraies classes et les colonnes les classes prédites) :")
+print(conf_matrix)
+
+print("\nÉvaluation sur l'ensemble de test")
+print(classification_report(y_test, y_test_pred_classes))
+```
