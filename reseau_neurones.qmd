@@ -37,6 +37,7 @@ Une **moyenne macro** est utilisée pour donner un aperçu global des performanc
 ## Exemple en Python
 
 ```{python}
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -45,12 +46,16 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-# Chargement des ensembles de données
+# 🔇 Désactivation des logs TensorFlow et des avertissements inutiles
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # Supprime les logs TensorFlow
+tf.get_logger().setLevel("ERROR")  # Supprime les logs internes de TensorFlow
+
+# 🔄 Chargement des ensembles de données
 train_data = pd.read_csv('covertype_train.csv')
 val_data = pd.read_csv('covertype_val.csv')
 test_data = pd.read_csv('covertype_test.csv')
 
-# Préparation des données
+# 📊 Préparation des données
 X_train = train_data.drop('Cover_Type', axis=1)
 y_train = train_data['Cover_Type'] - 1  # Ajustement des labels pour correspondre à l'indexation Python
 
@@ -60,31 +65,31 @@ y_val = val_data['Cover_Type'] - 1
 X_test = test_data.drop('Cover_Type', axis=1)
 y_test = test_data['Cover_Type'] - 1
 
-# Normalisation des données
+# 🔢 Normalisation des données
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_val = scaler.transform(X_val)
 X_test = scaler.transform(X_test)
 
-# Définition du modèle
+# 🏗 Définition du modèle
 model = keras.Sequential([
     keras.layers.Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
     keras.layers.Dense(64, activation='relu'),
     keras.layers.Dense(len(set(y_train)), activation='softmax')
 ])
 
-# Utilisation d'Adam avec un pas d'apprentissage adaptatif
+# 🚀 Compilation du modèle avec Adam (sans CUDA)
 optimizer = keras.optimizers.Adam()
 model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-# Entraînement du modèle
+# 📈 Entraînement du modèle (sans affichage de logs)
 history = model.fit(X_train, y_train, epochs=100, validation_data=(X_val, y_val), batch_size=32, verbose=0)
 
-# Détermination de la meilleure époque
+# 📊 Détermination de la meilleure époque
 best_epoch = history.history['val_accuracy'].index(max(history.history['val_accuracy'])) + 1
 best_val_acc = max(history.history['val_accuracy'])
 
-# Affichage des courbes d'entraînement
+# 📉 Affichage des courbes d'entraînement
 plt.figure(figsize=(8, 6))
 plt.plot(range(1, 101), history.history['accuracy'], label='Train Accuracy')
 plt.plot(range(1, 101), history.history['val_accuracy'], label='Validation Accuracy')
@@ -95,19 +100,20 @@ plt.title("Optimisation du modèle de réseau de neurones")
 plt.legend()
 plt.show()
 
-# Ré-entraîner le modèle avec la meilleure époque
+# 🔄 Ré-entraîner le modèle avec la meilleure époque (sans logs)
 model.fit(X_train, y_train, epochs=best_epoch, batch_size=32, verbose=0)
 
-# Évaluation sur l'ensemble de test
-y_test_pred = model.predict(X_test)
+# 🎯 Évaluation sur l'ensemble de test (sans logs)
+y_test_pred = model.predict(X_test, verbose=0)
 y_test_pred_classes = y_test_pred.argmax(axis=1)
 
-# Affichage de la matrice de confusion
+# 📌 Affichage de la matrice de confusion et des métriques finales
 conf_matrix = confusion_matrix(y_test, y_test_pred_classes)
-print(f"\nMeilleure époque : **{best_epoch}** avec une précision de validation de **{best_val_acc:.4f}**")
-print("\nMatrice de confusion (les lignes représentent les vraies classes et les colonnes les classes prédites) :")
+print(f"\n🔹 Meilleure époque : **{best_epoch}** avec une précision de validation de **{best_val_acc:.4f}**")
+print("\n📊 Matrice de confusion (les lignes = classes réelles, les colonnes = classes prédites) :")
 print(conf_matrix)
 
-print("\nÉvaluation sur l'ensemble de test")
+print("\n📈 Évaluation sur l'ensemble de test")
 print(classification_report(y_test, y_test_pred_classes))
+
 ```
