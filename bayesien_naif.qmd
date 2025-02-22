@@ -1,87 +1,97 @@
 ---
-title: "Classification - Bayésien Naïf"
+title: "Classifieur Bayésien Naïf"
 ---
 
-# Classification Bayésienne Naïve
-
 ## Théorie
+
 Le classificateur **Bayésien Naïf** repose sur le **théorème de Bayes** et l'hypothèse d'indépendance conditionnelle entre les variables explicatives. Il est particulièrement efficace pour les problèmes de classification textuelle et fonctionne bien même avec peu de données d'entraînement.
 
-## Hyperparamètres
-Contrairement à d'autres modèles, le **Bayésien Naïf** possède peu d'hyperparamètres. Cependant, le paramètre **`var_smoothing`** dans `GaussianNB` permet d'éviter les divisions par zéro en ajoutant un lissage aux variances estimées.
+## Hyperparamètre utilisé
 
-Nous allons rechercher la meilleure valeur de `var_smoothing` en testant plusieurs options.
+Nous allons optimiser :
 
-## Évaluation des performances
-Lorsqu'on évalue un modèle de classification, plusieurs métriques sont utilisées :
+- **`var_smoothing`** : Ce paramètre permet d'ajouter un lissage aux variances estimées pour éviter les divisions par zéro. Il est sélectionné en fonction de la précision sur l'ensemble de validation.
 
-- **Matrice de confusion** : Tableau qui résume les performances du modèle en comparant les vraies classes aux classes prédites. Les lignes correspondent aux **classes réelles**, et les colonnes aux **classes prédites**.
-- **Accuracy (Précision globale)** : Proportion des prédictions correctes parmi l'ensemble des données.
-- **Precision (Précision par classe)** : Nombre de vrais positifs divisé par la somme des vrais positifs et des faux positifs. Indique la fiabilité des prédictions positives.
-- **Recall (Rappel)** : Nombre de vrais positifs divisé par la somme des vrais positifs et des faux négatifs. Indique la capacité du modèle à détecter les échantillons positifs.
-- **F1-score** : Moyenne harmonique entre précision et rappel, utile lorsque les classes sont déséquilibrées.
+## Métriques d’évaluation
 
-## Exemple en Python
+Nous afficherons :
+
+- **Matrice de confusion** : montrant les erreurs de classification sur l'échantillon de test.
+
+- **Taux de bien classés sur l'échantillon de validation** avec le meilleur hyperparamètre.
+
+- **Taux de bien classés sur l'échantillon de test** avec ce même hyperparamètre.
+
+- **Taux de bien classés par classe sur l'échantillon de test** pour observer la précision sur chaque classe.
+
+## Recherche du meilleur `var_smoothing` et évaluation
 
 ```{python}
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, accuracy_score
+import warnings
 
-# Chargement des ensembles de données déjà préparés
+# 🔇 Suppression des avertissements inutiles
+warnings.filterwarnings("ignore", category=UserWarning)
+
+# 🔄 Chargement des ensembles de données
 train_data = pd.read_csv('covertype_train.csv')
 val_data = pd.read_csv('covertype_val.csv')
 test_data = pd.read_csv('covertype_test.csv')
 
-# Préparation des données
-X_train = train_data.drop('Cover_Type', axis=1)
-y_train = train_data['Cover_Type']
+# 📊 Préparation des données
+X_train, y_train = train_data.drop('Cover_Type', axis=1), train_data['Cover_Type']
+X_val, y_val = val_data.drop('Cover_Type', axis=1), val_data['Cover_Type']
+X_test, y_test = test_data.drop('Cover_Type', axis=1), test_data['Cover_Type']
 
-X_val = val_data.drop('Cover_Type', axis=1)
-y_val = val_data['Cover_Type']
-
-X_test = test_data.drop('Cover_Type', axis=1)
-y_test = test_data['Cover_Type']
-
-# Recherche du meilleur var_smoothing
+# 🎯 Recherche du meilleur hyperparamètre var_smoothing
 var_smoothing_values = np.logspace(-9, 0, 10)
 val_accuracies = []
 
 for smoothing in var_smoothing_values:
     gnb = GaussianNB(var_smoothing=smoothing)
     gnb.fit(X_train, y_train)
-    y_val_pred = gnb.predict(X_val)
-    val_accuracies.append(accuracy_score(y_val, y_val_pred))
+    acc = accuracy_score(y_val, gnb.predict(X_val))
+    val_accuracies.append((smoothing, acc))
 
-# Sélection du meilleur var_smoothing
-best_smoothing = var_smoothing_values[val_accuracies.index(max(val_accuracies))]
-print(f"Meilleur var_smoothing: {best_smoothing:.1e}")
+# Sélection du meilleur hyperparamètre
+best_smoothing, best_val_acc = max(val_accuracies, key=lambda x: x[1])
 
-# Affichage du graphique de performance
+
+# 📈 Affichage du graphique
 plt.figure(figsize=(8, 6))
-plt.plot(var_smoothing_values, val_accuracies, marker='o', linestyle='dashed', label='Validation Accuracy')
+plt.plot(var_smoothing_values, [acc for smoothing, acc in val_accuracies], marker='o', linestyle='dashed', label="Validation")
 plt.xscale('log')
 plt.xlabel("Valeur de var_smoothing")
-plt.ylabel("Taux de bonnes prédictions")
+plt.ylabel("Précision sur validation")
 plt.title("Optimisation du paramètre var_smoothing pour GaussianNB")
 plt.legend()
 plt.show()
 
-# Modèle final avec le meilleur hyperparamètre
-gnb = GaussianNB(var_smoothing=best_smoothing)
-gnb.fit(X_train, y_train)
+# 🏆 Modèle final avec le meilleur hyperparamètre
+final_model = GaussianNB(var_smoothing=best_smoothing)
+final_model.fit(X_train, y_train)
+y_test_pred = final_model.predict(X_test)
 
-# Évaluation sur l'ensemble de test
-y_test_pred = gnb.predict(X_test)
-
-# Affichage de la matrice de confusion avec annotations
+# 📊 Matrice de confusion
 conf_matrix = confusion_matrix(y_test, y_test_pred)
-print("\nMatrice de confusion (les lignes représentent les vraies classes et les colonnes les classes prédites) :")
+
+# 📈 Calcul des taux de bien classés par classe
+class_accuracies = conf_matrix.diagonal() / conf_matrix.sum(axis=1)
+overall_test_accuracy = accuracy_score(y_test, y_test_pred)
+
+# 📝 Affichage des résultats
+print(f"\n🔹 Meilleur var_smoothing sur l'échantillon de validation : {best_smoothing:.1e}")
+print(f"Taux de bien classés sur l'échantillon de validation avec cet hyperparamètre : {best_val_acc:.2%}")
+print("\n📊 Matrice de confusion sur l'échantillon de test, avec le meilleur hyperparamètre :")
 print(conf_matrix)
 
-print("\nÉvaluation sur l'ensemble de test")
-print(classification_report(y_test, y_test_pred))
+print("\n📈 Taux de bien classés par classe sur l'échantillon de test, avec le meilleur hyperparamètre  :")
+for i, acc in enumerate(class_accuracies, start=1):
+    print(f"Classe {i} : {acc:.2%}")
+
+print(f"\n🔹 Taux de bien classés sur l'échantillon de test avec le meilleur hyperparamètre : {overall_test_accuracy:.2%}")
 ```

@@ -2,87 +2,92 @@
 title: "Random Forest - Forêt Aléatoire"
 ---
 
-# Random Forest (Forêt Aléatoire)
-
 ## Théorie
-La forêt aléatoire est un algorithme d'apprentissage supervisé basé sur un ensemble d'arbres de décision. Elle fonctionne en combinant plusieurs arbres pour améliorer la précision et réduire le risque de surapprentissage.
 
-## Évaluation des performances
-Lorsqu'on évalue un modèle de classification, plusieurs métriques sont utilisées :
+La **forêt aléatoire** est un algorithme d'apprentissage supervisé basé sur un **ensemble d'arbres de décision**. Il fonctionne en combinant plusieurs arbres pour **améliorer la précision** et **réduire le risque de surapprentissage**.
 
-- **Matrice de confusion** : Tableau qui résume les performances du modèle en comparant les vraies classes aux classes prédites. Les lignes correspondent aux **classes réelles**, et les colonnes aux **classes prédites**.
-- **Accuracy (Précision globale)** : Proportion des prédictions correctes parmi l'ensemble des données.
-- **Precision (Précision par classe)** : Nombre de vrais positifs divisé par la somme des vrais positifs et des faux positifs. Indique la fiabilité des prédictions positives.
-- **Recall (Rappel)** : Nombre de vrais positifs divisé par la somme des vrais positifs et des faux négatifs. Indique la capacité du modèle à détecter les échantillons positifs.
-- **F1-score** : Moyenne harmonique entre précision et rappel, utile lorsque les classes sont déséquilibrées.
+## Hyperparamètre utilisé
 
-## Exemple en Python
+Nous allons optimiser :
+
+- **Nombre d'arbres (`n_estimators`)** : sélectionné en fonction de la précision sur l’ensemble de validation.
+
+## Métriques d’évaluation
+
+Nous afficherons :
+
+- **Matrice de confusion** : récapitulant les erreurs de classification.
+- **Taux de bien classés sur l’échantillon de validation** avec le meilleur hyperparamètre.
+- **Taux de bien classés sur l’échantillon de test** avec ce même hyperparamètre.
+- **Taux de bien classés par classe sur l’échantillon de test**.
+
+## Recherche du meilleur `n_estimators` et évaluation
 
 ```{python}
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, accuracy_score
+import warnings
 
-# Chargement des ensembles de données déjà préparés
+# 🔇 Suppression des avertissements inutiles
+warnings.filterwarnings("ignore", category=UserWarning)
+
+# 🔄 Chargement des ensembles de données
 train_data = pd.read_csv('covertype_train.csv')
 val_data = pd.read_csv('covertype_val.csv')
 test_data = pd.read_csv('covertype_test.csv')
 
-# Préparation des données
-X_train = train_data.drop('Cover_Type', axis=1)
-y_train = train_data['Cover_Type']
+# 📊 Préparation des données
+X_train, y_train = train_data.drop('Cover_Type', axis=1), train_data['Cover_Type']
+X_val, y_val = val_data.drop('Cover_Type', axis=1), val_data['Cover_Type']
+X_test, y_test = test_data.drop('Cover_Type', axis=1), test_data['Cover_Type']
 
-X_val = val_data.drop('Cover_Type', axis=1)
-y_val = val_data['Cover_Type']
-
-X_test = test_data.drop('Cover_Type', axis=1)
-y_test = test_data['Cover_Type']
-
-# Recherche du meilleur nombre d'arbres en utilisant l'ensemble de validation
+# 🎯 Recherche du meilleur hyperparamètre n_estimators
 n_estimators_range = range(50, 1000, 50)
-train_accuracies = []
 val_accuracies = []
 
 for n in n_estimators_range:
     rf = RandomForestClassifier(n_estimators=n, random_state=42, n_jobs=-1)
     rf.fit(X_train, y_train)
-    
-    # Évaluation sur l'ensemble d'entraînement
-    y_train_pred = rf.predict(X_train)
-    train_accuracies.append(accuracy_score(y_train, y_train_pred))
-    
-    # Évaluation sur l'ensemble de validation
-    y_val_pred = rf.predict(X_val)
-    val_accuracies.append(accuracy_score(y_val, y_val_pred))
+    acc = accuracy_score(y_val, rf.predict(X_val))
+    val_accuracies.append((n, acc))
 
-# Sélection du meilleur hyperparamètre basé sur l'ensemble de validation
-best_n = n_estimators_range[val_accuracies.index(max(val_accuracies))]
-print(f"Meilleur nombre d'arbres: {best_n}")
+# Sélection du meilleur nombre d'arbres
+best_n, best_val_acc = max(val_accuracies, key=lambda x: x[1])
 
-# Affichage du graphique comparant l'entraînement et la validation
+
+# 📈 Affichage du graphique
 plt.figure(figsize=(8, 6))
-plt.plot(n_estimators_range, train_accuracies, marker='o', linestyle='dashed', label='Train Accuracy')
-plt.plot(n_estimators_range, val_accuracies, marker='s', linestyle='dashed', label='Validation Accuracy')
+plt.plot(n_estimators_range, [acc for n, acc in val_accuracies], marker='o', linestyle='dashed', label="Validation")
 plt.xlabel("Nombre d'arbres")
-plt.ylabel("Taux de bonnes prédictions")
-plt.title("Optimisation du nombre d'arbres pour Random Forest")
+plt.ylabel("Précision sur validation")
+plt.title("Impact du nombre d'arbres sur la performance de Random Forest")
 plt.legend()
 plt.show()
 
-# Modèle final avec le meilleur nombre d'arbres
-rf = RandomForestClassifier(n_estimators=best_n, random_state=42, n_jobs=-1)
-rf.fit(X_train, y_train)
+# 🏆 Modèle final avec le meilleur nombre d'arbres
+final_model = RandomForestClassifier(n_estimators=best_n, random_state=42, n_jobs=-1)
+final_model.fit(X_train, y_train)
+y_test_pred = final_model.predict(X_test)
 
-# Évaluation sur l'ensemble de test
-y_test_pred = rf.predict(X_test)
-
-# Affichage de la matrice de confusion avec annotations
+# 📊 Matrice de confusion
 conf_matrix = confusion_matrix(y_test, y_test_pred)
-print("\nMatrice de confusion (les lignes représentent les vraies classes et les colonnes les classes prédites) :")
+
+# 📈 Calcul des taux de bien classés par classe
+class_accuracies = conf_matrix.diagonal() / conf_matrix.sum(axis=1)
+overall_test_accuracy = accuracy_score(y_test, y_test_pred)
+
+# 📝 Affichage des résultats
+print(f"\n🔹 Meilleur nombre d'arbres sur l’échantillon de validation : {best_n}")
+print(f"Taux de bien classés sur l’échantillon de validation avec cet hyperparamètre : {best_val_acc:.2%}")
+print("\n📊 Matrice de confusion sur l'échantillon de test, avec le meilleur hyperparamètre :")
 print(conf_matrix)
 
-print("\nÉvaluation sur l'ensemble de test")
-print(classification_report(y_test, y_test_pred))
+print("\n📈 Taux de bien classés par classe sur l’échantillon de test, avec le meilleur hyperparamètre  :")
+for i, acc in enumerate(class_accuracies, start=1):
+    print(f"Classe {i} : {acc:.2%}")
+
+print(f"\n🔹 Taux de bien classés sur l’échantillon de test avec le meilleur hyperparamètre : {overall_test_accuracy:.2%}")
 ```

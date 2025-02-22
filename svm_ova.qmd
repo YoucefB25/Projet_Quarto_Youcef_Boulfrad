@@ -1,17 +1,30 @@
 ---
-title: "SVM - One-Versus-All (OVA)"
+title: "Support Vector Machines (SVM) - One-Versus-All (OVA)"
 ---
 
-# SVM - One-Versus-All (OVA)
-
 ## Théorie
+
 Les **machines à vecteurs de support (SVM)** sont des modèles de classification supervisés qui cherchent à maximiser la marge de séparation entre les classes. Pour un problème **multiclasse**, l'approche **One-Versus-All (OVA)** entraîne un SVM pour chaque classe, la comparant à toutes les autres classes combinées.
 
-## Hyperparamètres
-Nous allons tester un seul hyperparamètre pour réduire le temps d'entraînement :
-- **Paramètre de régularisation (`C`)** : contrôle la pénalisation des erreurs de classification (valeurs entre `0.1` et `1`).
+## Hyperparamètre utilisé
 
-## Exemple en Python
+Nous allons optimiser :
+
+- **Paramètre de régularisation (`C`)** : contrôle la pénalisation des erreurs de classification et est sélectionné en fonction de la précision sur l'ensemble de validation.
+
+## Métriques d’évaluation
+
+Nous afficherons :
+
+- **Matrice de confusion** : montrant les erreurs de classification sur l'échantillon de test.
+
+- **Taux de bien classés sur l'échantillon de validation** avec le meilleur hyperparamètre.
+
+- **Taux de bien classés sur l'échantillon de test** avec ce même hyperparamètre.
+
+- **Taux de bien classés par classe sur l'échantillon de test** pour observer la précision sur chaque classe.
+
+## Recherche du meilleur `C` et évaluation
 
 ```{python}
 import pandas as pd
@@ -19,70 +32,71 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.svm import SVC
 from sklearn.multiclass import OneVsRestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.preprocessing import StandardScaler
+import warnings
 
-# Chargement des ensembles de données
+# 🔇 Suppression des avertissements inutiles
+warnings.filterwarnings("ignore", category=UserWarning)
+
+# 🔄 Chargement des ensembles de données
 train_data = pd.read_csv('covertype_train.csv')
 val_data = pd.read_csv('covertype_val.csv')
 test_data = pd.read_csv('covertype_test.csv')
 
-# Préparation des données
-X_train = train_data.drop('Cover_Type', axis=1)
-y_train = train_data['Cover_Type']
+# 📊 Préparation des données
+X_train, y_train = train_data.drop('Cover_Type', axis=1), train_data['Cover_Type']
+X_val, y_val = val_data.drop('Cover_Type', axis=1), val_data['Cover_Type']
+X_test, y_test = test_data.drop('Cover_Type', axis=1), test_data['Cover_Type']
 
-X_val = val_data.drop('Cover_Type', axis=1)
-y_val = val_data['Cover_Type']
-
-X_test = test_data.drop('Cover_Type', axis=1)
-y_test = test_data['Cover_Type']
-
-# Standardisation des données
+# 🔢 Normalisation des données
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_val = scaler.transform(X_val)
-X_test = scaler.transform(X_test)
+X_train, X_val, X_test = scaler.fit_transform(X_train), scaler.transform(X_val), scaler.transform(X_test)
 
-# Recherche du meilleur hyperparamètre (C seulement)
-C_values = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]   # Entre 0.1 et 1
-train_accuracies = []
+# 🎯 Recherche du meilleur hyperparamètre C
+C_values = np.arange(0.1, 1.1, 0.1)
 val_accuracies = []
 
 for C in C_values:
     model = OneVsRestClassifier(SVC(kernel='rbf', C=C))
     model.fit(X_train, y_train)
-    
-    y_train_pred = model.predict(X_train)
-    y_val_pred = model.predict(X_val)
-    
-    train_accuracies.append(accuracy_score(y_train, y_train_pred))
-    val_accuracies.append(accuracy_score(y_val, y_val_pred))
+    acc = accuracy_score(y_val, model.predict(X_val))
+    val_accuracies.append((C, acc))
 
 # Sélection du meilleur hyperparamètre
-best_C = C_values[val_accuracies.index(max(val_accuracies))]
-print(f"Meilleur hyperparamètre : C={best_C}")
+best_C, best_val_acc = max(val_accuracies, key=lambda x: x[1])
 
-# Affichage du graphique
+
+# 📈 Affichage du graphique
 plt.figure(figsize=(8, 6))
-plt.plot(C_values, train_accuracies, marker='o', linestyle='dashed', label='Train Accuracy')
-plt.plot(C_values, val_accuracies, marker='s', linestyle='dashed', label='Validation Accuracy')
+plt.plot(C_values, [acc for C, acc in val_accuracies], marker='o', linestyle='dashed', label="Validation")
 plt.xlabel("Paramètre de régularisation (C)")
-plt.ylabel("Précision")
+plt.ylabel("Précision sur validation")
 plt.title("Impact de la régularisation sur la performance du SVM (OVA)")
 plt.legend()
 plt.show()
 
-# Modèle final avec le meilleur hyperparamètre
+# 🏆 Modèle final avec le meilleur hyperparamètre
 final_model = OneVsRestClassifier(SVC(kernel='rbf', C=best_C))
 final_model.fit(X_train, y_train)
 y_test_pred = final_model.predict(X_test)
 
-# Affichage de la matrice de confusion
+# 📊 Matrice de confusion
 conf_matrix = confusion_matrix(y_test, y_test_pred)
-print("\nMatrice de confusion :")
+
+# 📈 Calcul des taux de bien classés par classe
+class_accuracies = conf_matrix.diagonal() / conf_matrix.sum(axis=1)
+overall_test_accuracy = accuracy_score(y_test, y_test_pred)
+
+# 📝 Affichage des résultats
+print(f"\n🔹 Meilleur hyperparamètre C sur l'échantillon de validation : {best_C:.2f}")
+print(f"Taux de bien classés sur l'échantillon de validation avec cet hyperparamètre : {best_val_acc:.2%}")
+print("\n📊 Matrice de confusion sur l'échantillon de test, avec le meilleur hyperparamètre :")
 print(conf_matrix)
 
-print("\nÉvaluation sur l'ensemble de test")
-print(classification_report(y_test, y_test_pred))
+print("\n📈 Taux de bien classés par classe sur l'échantillon de test, avec le meilleur hyperparamètre  :")
+for i, acc in enumerate(class_accuracies, start=1):
+    print(f"Classe {i} : {acc:.2%}")
+
+print(f"\n🔹 Taux de bien classés sur l'échantillon de test avec le meilleur hyperparamètre : {overall_test_accuracy:.2%}")
 ```

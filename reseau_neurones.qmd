@@ -1,54 +1,57 @@
 ---
-title: "Réseau de Neurones - Classification"
+title: "Réseau de Neurones (MLP) avec sortie Softmax"
 ---
 
-# Réseau de Neurones (MLP) avec sortie Softmax
-
 ## Théorie
+
 Un réseau de neurones multi-couches (**MLP - Multi-Layer Perceptron**) est un modèle d'apprentissage supervisé basé sur des couches de neurones artificiels. Il est particulièrement efficace pour la classification non linéaire.
 
 Dans notre cas, nous utilisons **une couche de sortie Softmax**, qui permet de normaliser les sorties du réseau en probabilités pour une classification multiclasses.
 
-## Hyperparamètres
-Lors de l'entraînement d'un réseau de neurones, plusieurs hyperparamètres influencent la performance :
+## Hyperparamètre utilisé
 
-- **Taille du pas d'apprentissage (`learning_rate`)** : Déterminée automatiquement avec l'optimiseur Adam.
-- **Nombre de couches cachées et neurones par couche** : Influence la capacité d'apprentissage du modèle.
-- **Nombre d'époques (`epochs`)** : Nombre de fois que le modèle parcourt l'ensemble des données d'entraînement.
-- **Taille du batch (`batch_size`)** : Nombre d'exemples utilisés pour calculer une mise à jour des poids.
+Nous allons optimiser :
 
-Nous allons utiliser **Adam avec un taux d'apprentissage adaptatif**, ce qui signifie que le pas d'apprentissage s'ajustera automatiquement au fil des itérations.
+- **Nombre d'époques (`epochs`)** : sélectionné en fonction de la précision sur l'ensemble de validation.
 
-## Évaluation des performances
-Comme pour les autres modèles de classification, nous utilisons :
+Nous utilisons également :
+- **Optimiseur Adam** avec un taux d’apprentissage adaptatif.
+- **Taille du batch (`batch_size`)** fixé à 32.
 
-- **Matrice de confusion** : Un tableau qui compare les classes réelles aux classes prédites. Chaque ligne représente une classe réelle et chaque colonne une classe prédite. Une bonne classification est indiquée par des valeurs élevées sur la diagonale principale, tandis que les erreurs de classification apparaissent en dehors de cette diagonale.
+## Métriques d’évaluation
 
-- **Accuracy (Précision globale)** : Le pourcentage de prédictions correctes parmi l'ensemble des données. Elle est utile lorsque les classes sont équilibrées, mais peut être trompeuse si certaines classes sont largement majoritaires.
+Nous afficherons :
 
-- **Precision (Précision par classe)** : Pour une classe donnée, la précision mesure la proportion de prédictions correctes parmi toutes celles où le modèle a prédit cette classe. Une haute précision signifie que lorsqu'une classe est prédite, elle est souvent correcte.
+- **Matrice de confusion** : montrant les erreurs de classification sur l'échantillon de test.
 
-- **Recall (Rappel par classe)** : Le rappel mesure la proportion de vrais exemples d'une classe qui sont correctement détectés par le modèle. Une haute valeur signifie que le modèle détecte bien les échantillons appartenant à cette classe.
+- **Taux de bien classés sur l'échantillon de validation** avec le meilleur nombre d'époques.
 
-- **F1-score** : Moyenne harmonique entre la précision et le rappel. Il équilibre ces deux mesures et est particulièrement utile lorsque les classes sont déséquilibrées.
+- **Taux de bien classés sur l'échantillon de test** avec ce même hyperparamètre.
 
-Une **moyenne macro** est utilisée pour donner un aperçu global des performances du modèle en attribuant un poids égal à chaque classe. Une **moyenne pondérée** (weighted avg) prend en compte la fréquence de chaque classe afin de refléter plus précisément la performance globale dans un contexte de classes déséquilibrées.
+- **Taux de bien classés par classe sur l'échantillon de test** pour observer la précision sur chaque classe.
 
-## Exemple en Python
+## Recherche du meilleur nombre d'époques et évaluation
 
 ```{python}
 import os
+import torch
+import torch.nn as nn
+import torch.optim as optim
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-import tensorflow as tf
-from tensorflow import keras
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.model_selection import train_test_split
+import warnings
+from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.preprocessing import StandardScaler
+from torch.utils.data import TensorDataset, DataLoader
 
-# 🔇 Désactivation des logs TensorFlow et des avertissements inutiles
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # Supprime les logs TensorFlow
-tf.get_logger().setLevel("ERROR")  # Supprime les logs internes de TensorFlow
+# 🔇 Suppression des avertissements inutiles
+warnings.filterwarnings("ignore", category=UserWarning)
+
+# 🔌 Utilisation du CPU uniquement (désactivation GPU)
+device = torch.device("cpu")
+torch.backends.cudnn.enabled = False
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # 🔄 Chargement des ensembles de données
 train_data = pd.read_csv('covertype_train.csv')
@@ -56,64 +59,138 @@ val_data = pd.read_csv('covertype_val.csv')
 test_data = pd.read_csv('covertype_test.csv')
 
 # 📊 Préparation des données
-X_train = train_data.drop('Cover_Type', axis=1)
-y_train = train_data['Cover_Type'] - 1  # Ajustement des labels pour correspondre à l'indexation Python
-
-X_val = val_data.drop('Cover_Type', axis=1)
-y_val = val_data['Cover_Type'] - 1
-
-X_test = test_data.drop('Cover_Type', axis=1)
-y_test = test_data['Cover_Type'] - 1
+X_train, y_train = train_data.drop('Cover_Type', axis=1).values, train_data['Cover_Type'].values - 1
+X_val, y_val = val_data.drop('Cover_Type', axis=1).values, val_data['Cover_Type'].values - 1
+X_test, y_test = test_data.drop('Cover_Type', axis=1).values, test_data['Cover_Type'].values - 1
 
 # 🔢 Normalisation des données
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_val = scaler.transform(X_val)
-X_test = scaler.transform(X_test)
+X_train, X_val, X_test = scaler.fit_transform(X_train), scaler.transform(X_val), scaler.transform(X_test)
 
-# 🏗 Définition du modèle
-model = keras.Sequential([
-    keras.layers.Dense(128, activation='relu', input_shape=(X_train.shape[1],)),
-    keras.layers.Dense(64, activation='relu'),
-    keras.layers.Dense(len(set(y_train)), activation='softmax')
-])
+# 📦 Conversion en tenseurs PyTorch
+X_train_torch = torch.tensor(X_train, dtype=torch.float32, device=device)
+y_train_torch = torch.tensor(y_train, dtype=torch.long, device=device)
+X_val_torch = torch.tensor(X_val, dtype=torch.float32, device=device)
+y_val_torch = torch.tensor(y_val, dtype=torch.long, device=device)
+X_test_torch = torch.tensor(X_test, dtype=torch.float32, device=device)
+y_test_torch = torch.tensor(y_test, dtype=torch.long, device=device)
 
-# 🚀 Compilation du modèle avec Adam (sans CUDA)
-optimizer = keras.optimizers.Adam()
-model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+# 📚 Création des DataLoaders
+batch_size = 32
+train_loader = DataLoader(TensorDataset(X_train_torch, y_train_torch), batch_size=batch_size, shuffle=True)
+val_loader = DataLoader(TensorDataset(X_val_torch, y_val_torch), batch_size=batch_size, shuffle=False)
+test_loader = DataLoader(TensorDataset(X_test_torch, y_test_torch), batch_size=batch_size, shuffle=False)
 
-# 📈 Entraînement du modèle (sans affichage de logs)
-history = model.fit(X_train, y_train, epochs=100, validation_data=(X_val, y_val), batch_size=32, verbose=0)
+# 🏗 Définition du modèle PyTorch (MLP)
+class MLP(nn.Module):
+    def __init__(self, input_dim, num_classes):
+        super(MLP, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 128)
+        self.relu1 = nn.ReLU()
+        self.fc2 = nn.Linear(128, 64)
+        self.relu2 = nn.ReLU()
+        self.fc3 = nn.Linear(64, num_classes)
 
-# 📊 Détermination de la meilleure époque
-best_epoch = history.history['val_accuracy'].index(max(history.history['val_accuracy'])) + 1
-best_val_acc = max(history.history['val_accuracy'])
+    def forward(self, x):
+        x = self.relu1(self.fc1(x))
+        x = self.relu2(self.fc2(x))
+        return self.fc3(x)  # Pas de softmax ici (inclus dans CrossEntropyLoss)
+
+# 🎯 Initialisation du modèle
+num_features, num_classes = X_train.shape[1], len(set(y_train))
+model = MLP(num_features, num_classes).to(device)
+
+# 🚀 Optimiseur et fonction de perte
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters())
+
+# 📈 Entraînement du modèle avec sélection du meilleur nombre d'époques
+num_epochs = 100
+train_acc_list, val_acc_list = [], []
+best_val_acc, best_epoch = 0, 0
+
+for epoch in range(num_epochs):
+    # 🔄 Mode entraînement
+    model.train()
+    correct_train, total_train = 0, 0
+
+    for X_batch, y_batch in train_loader:
+        optimizer.zero_grad()
+        outputs = model(X_batch)
+        loss = criterion(outputs, y_batch)
+        loss.backward()
+        optimizer.step()
+
+        # 🎯 Calcul de l'accuracy sur l'entraînement
+        _, predicted = torch.max(outputs, 1)
+        correct_train += (predicted == y_batch).sum().item()
+        total_train += y_batch.size(0)
+
+    train_acc_list.append(correct_train / total_train)
+
+    # 🔄 Mode validation
+    model.eval()
+    correct_val, total_val = 0, 0
+
+    with torch.no_grad():
+        for X_batch, y_batch in val_loader:
+            outputs = model(X_batch)
+            _, predicted = torch.max(outputs, 1)
+            correct_val += (predicted == y_batch).sum().item()
+            total_val += y_batch.size(0)
+
+    val_accuracy = correct_val / total_val
+    val_acc_list.append(val_accuracy)
+
+    # 🎯 Sauvegarde de la meilleure époque
+    if val_accuracy > best_val_acc:
+        best_val_acc, best_epoch = val_accuracy, epoch + 1
 
 # 📉 Affichage des courbes d'entraînement
 plt.figure(figsize=(8, 6))
-plt.plot(range(1, 101), history.history['accuracy'], label='Train Accuracy')
-plt.plot(range(1, 101), history.history['val_accuracy'], label='Validation Accuracy')
+plt.plot(range(1, num_epochs + 1), train_acc_list, label='Train Accuracy')
+plt.plot(range(1, num_epochs + 1), val_acc_list, label='Validation Accuracy')
 plt.axvline(best_epoch, color='r', linestyle='--', label=f'Best Epoch: {best_epoch}')
 plt.xlabel("Époques")
 plt.ylabel("Taux de bonnes prédictions")
-plt.title("Optimisation du modèle de réseau de neurones")
+plt.title("Optimisation du modèle de réseau de neurones (PyTorch)")
 plt.legend()
 plt.show()
 
-# 🔄 Ré-entraîner le modèle avec la meilleure époque (sans logs)
-model.fit(X_train, y_train, epochs=best_epoch, batch_size=32, verbose=0)
+# 🔄 Ré-entraîner le modèle avec le meilleur nombre d'époques
+model.train()
+for epoch in range(best_epoch):
+    for X_batch, y_batch in train_loader:
+        optimizer.zero_grad()
+        outputs = model(X_batch)
+        loss = criterion(outputs, y_batch)
+        loss.backward()
+        optimizer.step()
 
-# 🎯 Évaluation sur l'ensemble de test (sans logs)
-y_test_pred = model.predict(X_test, verbose=0)
-y_test_pred_classes = y_test_pred.argmax(axis=1)
+# 🎯 Évaluation sur l'ensemble de test
+model.eval()
+correct_test, total_test = 0, 0
+y_test_pred_classes = []
+
+with torch.no_grad():
+    for X_batch, y_batch in test_loader:
+        outputs = model(X_batch)
+        _, predicted = torch.max(outputs, 1)
+        y_test_pred_classes.extend(predicted.cpu().numpy())
+        correct_test += (predicted == y_batch).sum().item()
+        total_test += y_batch.size(0)
+
+test_accuracy = correct_test / total_test
 
 # 📌 Affichage de la matrice de confusion et des métriques finales
 conf_matrix = confusion_matrix(y_test, y_test_pred_classes)
-print(f"\n🔹 Meilleure époque : **{best_epoch}** avec une précision de validation de **{best_val_acc:.4f}**")
-print("\n📊 Matrice de confusion (les lignes = classes réelles, les colonnes = classes prédites) :")
+print(f"\n🔹 Meilleure époque : {best_epoch} avec une précision de validation de {best_val_acc:.2%}")
+print("\n📊 Matrice de confusion :")
 print(conf_matrix)
 
-print("\n📈 Évaluation sur l'ensemble de test")
-print(classification_report(y_test, y_test_pred_classes))
-
+print("\n📈 Taux de bien classés par classe :")
+class_accuracies = conf_matrix.diagonal() / conf_matrix.sum(axis=1)
+for i, acc in enumerate(class_accuracies, start=1):
+    print(f"Classe {i} : {acc:.2%}")
+print(f"\nTaux de bien classés total : {test_accuracy:.2%}")
 ```

@@ -2,87 +2,92 @@
 title: "Arbre de Décision - CART"
 ---
 
-# Arbre de Décision (CART)
-
 ## Théorie
-L'algorithme CART (**Classification and Regression Trees**) est un modèle d'apprentissage supervisé qui construit un arbre de décision en divisant l'espace des caractéristiques en sous-ensembles homogènes.
 
-## Évaluation des performances
-Lorsqu'on évalue un modèle de classification, plusieurs métriques sont utilisées :
+L'algorithme **CART** (**Classification and Regression Trees**) est un modèle d'apprentissage supervisé qui construit un **arbre de décision** en divisant l'espace des caractéristiques en sous-ensembles homogènes.
 
-- **Matrice de confusion** : Tableau qui résume les performances du modèle en comparant les vraies classes aux classes prédites. Les lignes correspondent aux **classes réelles**, et les colonnes aux **classes prédites**.
-- **Accuracy (Précision globale)** : Proportion des prédictions correctes parmi l'ensemble des données.
-- **Precision (Précision par classe)** : Nombre de vrais positifs divisé par la somme des vrais positifs et des faux positifs. Indique la fiabilité des prédictions positives.
-- **Recall (Rappel)** : Nombre de vrais positifs divisé par la somme des vrais positifs et des faux négatifs. Indique la capacité du modèle à détecter les échantillons positifs.
-- **F1-score** : Moyenne harmonique entre précision et rappel, utile lorsque les classes sont déséquilibrées.
+## Hyperparamètre utilisé
 
-## Exemple en Python
+Nous allons optimiser :
+
+- **Profondeur maximale de l’arbre (`max_depth`)** : sélectionnée en fonction de la précision sur l’ensemble de validation.
+
+## Métriques d’évaluation
+
+Nous afficherons :
+
+- **Matrice de confusion** : récapitulant les erreurs de classification.
+- **Taux de bien classés sur l’échantillon de validation** avec le meilleur hyperparamètre.
+- **Taux de bien classés sur l’échantillon de test** avec ce même hyperparamètre.
+- **Taux de bien classés par classe sur l’échantillon de test**.
+
+## Recherche de la meilleure `max_depth` et évaluation
 
 ```{python}
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, accuracy_score
+import warnings
 
-# Chargement des ensembles de données déjà préparés
+# 🔇 Suppression des avertissements inutiles
+warnings.filterwarnings("ignore", category=UserWarning)
+
+# 🔄 Chargement des ensembles de données
 train_data = pd.read_csv('covertype_train.csv')
 val_data = pd.read_csv('covertype_val.csv')
 test_data = pd.read_csv('covertype_test.csv')
 
-# Préparation des données
-X_train = train_data.drop('Cover_Type', axis=1)
-y_train = train_data['Cover_Type']
+# 📊 Préparation des données
+X_train, y_train = train_data.drop('Cover_Type', axis=1), train_data['Cover_Type']
+X_val, y_val = val_data.drop('Cover_Type', axis=1), val_data['Cover_Type']
+X_test, y_test = test_data.drop('Cover_Type', axis=1), test_data['Cover_Type']
 
-X_val = val_data.drop('Cover_Type', axis=1)
-y_val = val_data['Cover_Type']
-
-X_test = test_data.drop('Cover_Type', axis=1)
-y_test = test_data['Cover_Type']
-
-# Recherche de la meilleure profondeur d'arbre en utilisant l'ensemble de validation
+# 🎯 Recherche du meilleur hyperparamètre max_depth
 depth_range = range(1, 30)
-train_accuracies = []
 val_accuracies = []
 
 for depth in depth_range:
     tree = DecisionTreeClassifier(max_depth=depth, random_state=42)
     tree.fit(X_train, y_train)
-    
-    # Évaluation sur l'ensemble d'entraînement
-    y_train_pred = tree.predict(X_train)
-    train_accuracies.append(accuracy_score(y_train, y_train_pred))
-    
-    # Évaluation sur l'ensemble de validation
-    y_val_pred = tree.predict(X_val)
-    val_accuracies.append(accuracy_score(y_val, y_val_pred))
+    acc = accuracy_score(y_val, tree.predict(X_val))
+    val_accuracies.append((depth, acc))
 
-# Sélection de la meilleure profondeur basée sur l'ensemble de validation
-best_depth = depth_range[val_accuracies.index(max(val_accuracies))]
-print(f"Meilleure profondeur d'arbre: {best_depth}")
+# Sélection de la meilleure profondeur d'arbre
+best_depth, best_val_acc = max(val_accuracies, key=lambda x: x[1])
 
-# Affichage du graphique comparant l'entraînement et la validation
+
+# 📈 Affichage du graphique
 plt.figure(figsize=(8, 6))
-plt.plot(depth_range, train_accuracies, marker='o', linestyle='dashed', label='Train Accuracy')
-plt.plot(depth_range, val_accuracies, marker='s', linestyle='dashed', label='Validation Accuracy')
+plt.plot(depth_range, [acc for depth, acc in val_accuracies], marker='o', linestyle='dashed', label="Validation")
 plt.xlabel("Profondeur de l'arbre")
-plt.ylabel("Taux de bonnes prédictions")
-plt.title("Optimisation de la profondeur de l'arbre pour CART")
+plt.ylabel("Précision sur validation")
+plt.title("Impact de la profondeur de l'arbre sur la performance de CART")
 plt.legend()
 plt.show()
 
-# Modèle final avec la meilleure profondeur
-tree = DecisionTreeClassifier(max_depth=best_depth, random_state=42)
-tree.fit(X_train, y_train)
+# 🏆 Modèle final avec la meilleure profondeur
+final_model = DecisionTreeClassifier(max_depth=best_depth, random_state=42)
+final_model.fit(X_train, y_train)
+y_test_pred = final_model.predict(X_test)
 
-# Évaluation sur l'ensemble de test
-y_test_pred = tree.predict(X_test)
-
-# Affichage de la matrice de confusion avec annotations
+# 📊 Matrice de confusion
 conf_matrix = confusion_matrix(y_test, y_test_pred)
-print("\nMatrice de confusion (les lignes représentent les vraies classes et les colonnes les classes prédites) :")
+
+# 📈 Calcul des taux de bien classés par classe
+class_accuracies = conf_matrix.diagonal() / conf_matrix.sum(axis=1)
+overall_test_accuracy = accuracy_score(y_test, y_test_pred)
+
+# 📝 Affichage des résultats
+print(f"\n🔹 Meilleure profondeur de l'arbre sur l’échantillon de validation : {best_depth}")
+print(f"Taux de bien classés sur l’échantillon de validation avec cet hyperparamètre : {best_val_acc:.2%}")
+print("\n📊 Matrice de confusion sur l'échantillon de test, avec le meilleur hyperparamètre :")
 print(conf_matrix)
 
-print("\nÉvaluation sur l'ensemble de test")
-print(classification_report(y_test, y_test_pred))
+print("\n📈 Taux de bien classés par classe sur l’échantillon de test, avec le meilleur hyperparamètre  :")
+for i, acc in enumerate(class_accuracies, start=1):
+    print(f"Classe {i} : {acc:.2%}")
+
+print(f"\n🔹 Taux de bien classés sur l’échantillon de test avec le meilleur hyperparamètre : {overall_test_accuracy:.2%}")
 ```

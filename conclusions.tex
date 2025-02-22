@@ -1,0 +1,312 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,breakanywhere=true,commandchars=\\\{\}}
+\usepackage[a4paper,margin=1.5cm]{geometry} % Réduction des marges
+\usepackage{graphicx}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.2} % Hauteur des lignes ajustée
+\setlength{\tabcolsep}{8pt} % Espacement entre les colonnes
+\usepackage{adjustbox} % Ajustement automatique des tableaux
+\usepackage{fontenc}
+\usepackage{lmodern}
+\usepackage{caption}
+\captionsetup{font=small} % Taille des légendes réduite
+\usepackage{helvet} % Police plus compacte
+\renewcommand{\familydefault}{\sfdefault} % Application de la police compacte
+\fontsize{9pt}{11pt}\selectfont % Police réduite
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Comparaison des Méthodes de Classification},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Comparaison des Méthodes de Classification}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\subsection{Comparaison des Performances des
+Modèles}\label{comparaison-des-performances-des-moduxe8les}
+
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Classe (effectif) & KNN & LDA & QDA & Bayesien Naïf & Arbre CART & Forêt Aléatoire & Reg Log OVA & Reg Log OVO & Reg Multinom & Réseau Neurones & SVM OVA & SVM OVO \\
+\hline
+1 (10592) & 78.48 & 63.43 & 54.88 & 61.35 & 74.61 & 82.73 & 63.10 & 66.97 & 66.82 & 78.29 & 68.29 & 70.55 \\
+2 (14165) & 80.76 & 65.83 & 55.10 & 61.14 & 76.84 & 87.89 & 75.89 & 75.40 & 75.61 & 86.69 & 78.57 & 78.61 \\
+3 (7151) & 86.36 & 63.08 & 66.29 & 65.66 & 85.03 & 94.55 & 88.81 & 86.78 & 87.34 & 84.55 & 90.63 & 90.35 \\
+4 (549) & 63.64 & 48.18 & 48.18 & 60.00 & 67.27 & 64.55 & 26.36 & 34.55 & 30.91 & 70.00 & 20.00 & 21.82 \\
+5 (1899) & 77.89 & 47.11 & 50.26 & 46.32 & 69.21 & 71.84 & 16.58 & 25.79 & 24.21 & 83.95 & 33.16 & 34.47 \\
+6 (3473) & 73.05 & 52.45 & 48.27 & 44.81 & 74.06 & 78.67 & 27.67 & 40.06 & 35.30 & 86.31 & 38.33 & 38.62 \\
+7 (4102) & 93.79 & 80.88 & 80.88 & 79.29 & 90.86 & 94.28 & 81.36 & 80.39 & 79.66 & 92.33 & 82.10 & 81.49 \\
+Total (41931) & 81.42 & 64.04 & 58.60 & 61.70 & 78.35 & 86.55 & 68.07 & 69.99 & 69.54 & 84.38 & 72.22 & 72.80 \\
+\hline
+\end{tabular}
+\end{adjustbox}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Meilleures Performances
+Globales}\label{meilleures-performances-globales}
+
+\begin{itemize}
+\tightlist
+\item
+  La \textbf{Forêt Aléatoire} est le meilleur modèle global avec
+  \textbf{86.55\%} de précision moyenne.
+\item
+  Le \textbf{Réseau de Neurones} suit de près avec \textbf{84.38\%},
+  prouvant l'efficacité des méthodes d'apprentissage profond.
+\item
+  Le \textbf{KNN (81.42\%)} et l'\textbf{Arbre CART (78.35\%)} sont
+  également compétitifs.
+\end{itemize}
+
+\section{Analyse des Classes Minoritaires (4, 5,
+6)}\label{analyse-des-classes-minoritaires-4-5-6}
+
+\begin{itemize}
+\tightlist
+\item
+  Les classes peu représentées sont souvent mal classées.
+\item
+  \textbf{Forêt Aléatoire} (64.55\%, 71.84\%, 78.67\%) offre la
+  meilleure robustesse.
+\item
+  \textbf{Réseau de Neurones} (70.00\%, 83.95\%, 86.31\%) s'adapte bien
+  aux déséquilibres.
+\item
+  \textbf{Arbre CART} (67.27\%, 69.21\%, 74.06\%) est un compromis
+  intéressant.
+\end{itemize}
+
+\section{Méthodes les Plus Faibles
+:}\label{muxe9thodes-les-plus-faibles}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{SVM et Régressions Logistiques} (OVA et OVO) sous-performent
+  sur les classes minoritaires (\textbf{moins de 40\% pour certaines}).
+\item
+  \textbf{QDA et Bayésien Naïf} sont globalement moins efficaces
+  (\textbf{58.60\% et 61.70\%} respectivement).
+\end{itemize}
+
+\section{Méthodes Paramétriques vs
+Non-Paramétriques}\label{muxe9thodes-paramuxe9triques-vs-non-paramuxe9triques}
+
+Les modèles \textbf{non-paramétriques surpassent largement les modèles
+paramétriques} : - \textbf{Forêt Aléatoire (86.55\%)}, \textbf{Réseau de
+Neurones (84.38\%)}, \textbf{KNN (81.42\%)} et \textbf{Arbre CART
+(78.35\%)} dominent le classement. - À l'inverse, \textbf{LDA
+(64.04\%)}, \textbf{QDA (58.60\%)} et \textbf{Bayésien Naïf (61.70\%)}
+sont nettement moins performants.
+
+Les \textbf{modèles non-paramétriques} sont plus flexibles et capturent
+mieux des structures complexes dans les données, tandis que les modèles
+paramétriques reposent sur des hypothèses restrictives.
+
+\section{Multiclasse Natif vs Adapté
+(OVA/OVO)}\label{multiclasse-natif-vs-adaptuxe9-ovaovo}
+
+Les méthodes \textbf{multiclasse natives} (comme \textbf{Forêt
+Aléatoire, Arbre CART, Réseau de Neurones}) ont des performances
+meilleures que les modèles binaires adaptés \textbf{OVA et OVO}.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Forêt Aléatoire (86.55\%)} et \textbf{Réseau de Neurones
+  (84.38\%)}, qui sont naturellement adaptés au multiclasse, surpassent
+  les modèles \textbf{SVM OVA (72.22\%)} et \textbf{SVM OVO (72.80\%)},
+  ainsi que les \textbf{régressions logistiques OVA et OVO}.
+\item
+  Les méthodes \textbf{binaires adaptées} (OVA et OVO) peinent surtout
+  sur les classes minoritaires, avec des scores très faibles
+  (\textbf{ex. SVM OVA : 20.00\% sur la classe 4 !}).
+\end{itemize}
+
+\subsection{Explication :}\label{explication}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{OVA} force une classe unique à se démarquer contre toutes les
+  autres.
+\item
+  \textbf{OVO} compare les classes deux à deux, ce qui est sous-optimal
+  pour des classes déséquilibrées.
+\end{itemize}
+
+\section{Résumé Final}\label{ruxe9sumuxe9-final}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Les modèles non-paramétriques sont les meilleurs} grâce à leur
+  flexibilité et leur adaptation aux classes déséquilibrées.
+\item
+  \textbf{Les méthodes multiclasses natives (Forêt Aléatoire, Réseau de
+  Neurones, Arbre CART) dominent} les modèles binaires adaptés.
+\item
+  \textbf{Si les classes minoritaires sont importantes}, privilégiez
+  \textbf{Forêt Aléatoire, Réseau de Neurones ou Arbre CART}.
+\item
+  \textbf{Les modèles OVA/OVO ne sont pas adaptés} aux jeux de données
+  avec des classes déséquilibrées.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+
+
+
+\end{document}
