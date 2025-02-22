@@ -217,14 +217,14 @@ Globales}\label{meilleures-performances-globales}
 \item
   Les classes peu représentées sont souvent mal classées.
 \item
-  \textbf{Forêt Aléatoire} (64.55\%, 71.84\%, 78.67\%) offre la
-  meilleure robustesse.
+  \textbf{Le Réseau de Neurones} (70.00\%, 83.95\%, 86.31\%) est le
+  meilleur classifieur pour les classes à faibles effectifs.
 \item
-  \textbf{Réseau de Neurones} (70.00\%, 83.95\%, 86.31\%) s'adapte bien
-  aux déséquilibres.
+  \textbf{La Forêt Aléatoire} (64.55\%, 71.84\%, 78.67\%) suit, avec une
+  robustesse élevée.
 \item
-  \textbf{Arbre CART} (67.27\%, 69.21\%, 74.06\%) est un compromis
-  intéressant.
+  \textbf{L'Arbre CART} (67.27\%, 69.21\%, 74.06\%) est également
+  robuste.
 \end{itemize}
 
 \section{Méthodes les Plus Faibles
@@ -233,10 +233,11 @@ Globales}\label{meilleures-performances-globales}
 \begin{itemize}
 \tightlist
 \item
-  \textbf{SVM et Régressions Logistiques} (OVA et OVO) sous-performent
-  sur les classes minoritaires (\textbf{moins de 40\% pour certaines}).
+  \textbf{Les SVM et Les Régressions Logistiques} (OVA et OVO)
+  sous-performent sur les classes minoritaires (\textbf{moins de 40\%
+  pour certaines}).
 \item
-  \textbf{QDA et Bayésien Naïf} sont globalement moins efficaces
+  \textbf{QDA, LDA et Bayésien Naïf} sont globalement moins efficaces
   (\textbf{58.60\% et 61.70\%} respectivement).
 \end{itemize}
 
@@ -244,9 +245,9 @@ Globales}\label{meilleures-performances-globales}
 Non-Paramétriques}\label{muxe9thodes-paramuxe9triques-vs-non-paramuxe9triques}
 
 Les modèles \textbf{non-paramétriques surpassent largement les modèles
-paramétriques} : - \textbf{Forêt Aléatoire (86.55\%)}, \textbf{Réseau de
-Neurones (84.38\%)}, \textbf{KNN (81.42\%)} et \textbf{Arbre CART
-(78.35\%)} dominent le classement. - À l'inverse, \textbf{LDA
+paramétriques} : - \textbf{La Forêt Aléatoire (86.55\%)}, \textbf{le
+Réseau de Neurones (84.38\%)}, \textbf{KNN (81.42\%)} et \textbf{l'Arbre
+CART (78.35\%)} dominent le classement. - À l'inverse, \textbf{LDA
 (64.04\%)}, \textbf{QDA (58.60\%)} et \textbf{Bayésien Naïf (61.70\%)}
 sont nettement moins performants.
 
@@ -264,7 +265,7 @@ meilleures que les modèles binaires adaptés \textbf{OVA et OVO}.
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Forêt Aléatoire (86.55\%)} et \textbf{Réseau de Neurones
+  \textbf{La Forêt Aléatoire (86.55\%)} et \textbf{le Réseau de Neurones
   (84.38\%)}, qui sont naturellement adaptés au multiclasse, surpassent
   les modèles \textbf{SVM OVA (72.22\%)} et \textbf{SVM OVO (72.80\%)},
   ainsi que les \textbf{régressions logistiques OVA et OVO}.
@@ -274,7 +275,7 @@ meilleures que les modèles binaires adaptés \textbf{OVA et OVO}.
   (\textbf{ex. SVM OVA : 20.00\% sur la classe 4 !}).
 \end{itemize}
 
-\subsection{Explication :}\label{explication}
+\subsubsection{Explication :}\label{explication}
 
 \begin{itemize}
 \tightlist
@@ -295,7 +296,8 @@ meilleures que les modèles binaires adaptés \textbf{OVA et OVO}.
   flexibilité et leur adaptation aux classes déséquilibrées.
 \item
   \textbf{Les méthodes multiclasses natives (Forêt Aléatoire, Réseau de
-  Neurones, Arbre CART) dominent} les modèles binaires adaptés.
+  Neurones, Arbre CART, KNN) dominent} les modèles binaires adaptés
+  (SVM..).
 \item
   \textbf{Si les classes minoritaires sont importantes}, privilégiez
   \textbf{Forêt Aléatoire, Réseau de Neurones ou Arbre CART}.

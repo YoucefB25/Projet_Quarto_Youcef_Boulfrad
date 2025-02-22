@@ -1,6 +1,7 @@
 project:
   type: website
-  title: "Cours : Méthodes de Classification"
+  title: "Méthodes de classification supervisée"
+  output-dir: "exports"
 
 format:
   html:

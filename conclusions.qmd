@@ -66,19 +66,19 @@ Total (41931) & 81.42 & 64.04 & 58.60 & 61.70 & 78.35 & 86.55 & 68.07 & 69.99 & 
 # Analyse des Classes Minoritaires (4, 5, 6)
 
 - Les classes peu représentées sont souvent mal classées.
-- **Forêt Aléatoire** (64.55%, 71.84%, 78.67%) offre la meilleure robustesse.
-- **Réseau de Neurones** (70.00%, 83.95%, 86.31%) s’adapte bien aux déséquilibres.
-- **Arbre CART** (67.27%, 69.21%, 74.06%) est un compromis intéressant.
+- **Le Réseau de Neurones** (70.00%, 83.95%, 86.31%) est le meilleur classifieur pour les classes à faibles effectifs.
+- **La Forêt Aléatoire** (64.55%, 71.84%, 78.67%) suit, avec une robustesse élevée.
+- **L'Arbre CART** (67.27%, 69.21%, 74.06%) est également robuste.
 
 # Méthodes les Plus Faibles :
 
-- **SVM et Régressions Logistiques** (OVA et OVO) sous-performent sur les classes minoritaires (**moins de 40% pour certaines**).
-- **QDA et Bayésien Naïf** sont globalement moins efficaces (**58.60% et 61.70%** respectivement).
+- **Les SVM et Les Régressions Logistiques** (OVA et OVO) sous-performent sur les classes minoritaires (**moins de 40% pour certaines**).
+- **QDA, LDA et Bayésien Naïf** sont globalement moins efficaces (**58.60% et 61.70%** respectivement).
 
 # Méthodes Paramétriques vs Non-Paramétriques
 
 Les modèles **non-paramétriques surpassent largement les modèles paramétriques** :
-- **Forêt Aléatoire (86.55%)**, **Réseau de Neurones (84.38%)**, **KNN (81.42%)** et **Arbre CART (78.35%)** dominent le classement.
+- **La Forêt Aléatoire (86.55%)**, **le Réseau de Neurones (84.38%)**, **KNN (81.42%)** et **l'Arbre CART (78.35%)** dominent le classement.
 - À l’inverse, **LDA (64.04%)**, **QDA (58.60%)** et **Bayésien Naïf (61.70%)** sont nettement moins performants.
 
 Les **modèles non-paramétriques** sont plus flexibles et capturent mieux des structures complexes dans les données, tandis que les modèles paramétriques reposent sur des hypothèses restrictives.
@@ -87,17 +87,17 @@ Les **modèles non-paramétriques** sont plus flexibles et capturent mieux des s
 
 Les méthodes **multiclasse natives** (comme **Forêt Aléatoire, Arbre CART, Réseau de Neurones**) ont des performances meilleures que les modèles binaires adaptés **OVA et OVO**.
 
-- **Forêt Aléatoire (86.55%)** et **Réseau de Neurones (84.38%)**, qui sont naturellement adaptés au multiclasse, surpassent les modèles **SVM OVA (72.22%)** et **SVM OVO (72.80%)**, ainsi que les **régressions logistiques OVA et OVO**.
+- **La Forêt Aléatoire (86.55%)** et **le Réseau de Neurones (84.38%)**, qui sont naturellement adaptés au multiclasse, surpassent les modèles **SVM OVA (72.22%)** et **SVM OVO (72.80%)**, ainsi que les **régressions logistiques OVA et OVO**.
 - Les méthodes **binaires adaptées** (OVA et OVO) peinent surtout sur les classes minoritaires, avec des scores très faibles (**ex. SVM OVA : 20.00% sur la classe 4 !**).
 
-## Explication : 
+### Explication : 
 - **OVA** force une classe unique à se démarquer contre toutes les autres.
 - **OVO** compare les classes deux à deux, ce qui est sous-optimal pour des classes déséquilibrées.
 
 # Résumé Final
 
 - **Les modèles non-paramétriques sont les meilleurs** grâce à leur flexibilité et leur adaptation aux classes déséquilibrées.
-- **Les méthodes multiclasses natives (Forêt Aléatoire, Réseau de Neurones, Arbre CART) dominent** les modèles binaires adaptés.
+- **Les méthodes multiclasses natives (Forêt Aléatoire, Réseau de Neurones, Arbre CART, KNN) dominent** les modèles binaires adaptés (SVM..).
 - **Si les classes minoritaires sont importantes**, privilégiez **Forêt Aléatoire, Réseau de Neurones ou Arbre CART**.
 - **Les modèles OVA/OVO ne sont pas adaptés** aux jeux de données avec des classes déséquilibrées.
 
