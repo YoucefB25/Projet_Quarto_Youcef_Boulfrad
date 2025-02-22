@@ -213,7 +213,7 @@ d'entrainement.
 \item
   \textbf{Forêt Aléatoire (Random Forest)}
 \item
-  \textbf{K-Nearest Neighbors (KNN - Multiclasse, OVA et OVO)}
+  \textbf{K-Nearest Neighbors (KNN)}
 \item
   \textbf{Machines à Vecteurs de Support (SVM - OVA et OVO)}
 \item
@@ -234,23 +234,42 @@ adaptés pour des problèmes multiclasses.
 Natifs}\label{classifieurs-multiclasses-natifs}
 
 Ces classifieurs peuvent traiter directement un problème à plusieurs
-classes sans nécessiter de transformation : - \textbf{Régression
-Multinomiale (Softmax Regression)} - \textbf{Analyse Discriminante
-Linéaire (LDA)} - \textbf{Analyse Discriminante Quadratique (QDA)} -
-\textbf{Classifieur Bayésien Naïf} - \textbf{Arbre de Décision (CART)} -
-\textbf{Forêt Aléatoire (Random Forest)} - \textbf{Réseau de Neurones
-(MLP avec sortie Softmax)} - \textbf{K-Nearest Neighbors (KNN
-Multiclasse)}
+classes sans nécessiter de transformation :
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Régression Multinomiale (Softmax Regression)}
+\item
+  \textbf{Analyse Discriminante Linéaire (LDA)}
+\item
+  \textbf{Analyse Discriminante Quadratique (QDA)}
+\item
+  \textbf{Classifieur Bayésien Naïf}
+\item
+  \textbf{Arbre de Décision (CART)}
+\item
+  \textbf{Forêt Aléatoire (Random Forest)}
+\item
+  \textbf{Réseau de Neurones (MLP avec sortie Softmax)}
+\item
+  \textbf{K-Nearest Neighbors (KNN)}
+\end{itemize}
 
 \subsubsection{2. Classifieurs Binaires
 Adaptés}\label{classifieurs-binaires-adaptuxe9s}
 
 Les classifieurs binaires doivent être transformés pour gérer plusieurs
 classes en utilisant des approches comme \textbf{One-Versus-All (OVA)}
-ou \textbf{One-Versus-One (OVO)} : - \textbf{Régression Logistique}
-(adaptée en OVA et OVO) - \textbf{Support Vector Machines (SVM)}
-(adaptées en OVA et OVO) - \textbf{K-Nearest Neighbors (KNN - OVA et
-OVO)}
+ou \textbf{One-Versus-One (OVO)} :
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Régression Logistique} (adaptée en OVA et OVO)
+\item
+  \textbf{Support Vector Machines (SVM)} (adaptées en OVA et OVO)
+\end{itemize}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -276,9 +295,15 @@ problème car le modèle doit distinguer une classe contre un ensemble de
 classes plus nombreuses. - Peut générer des scores de confiance biaisés
 si les classes sont très déséquilibrées.
 
-\textbf{Exemples de classifieurs utilisant OVA :} - \textbf{Régression
-Logistique (OVA)} - \textbf{SVM (OVA)} - \textbf{K-Nearest Neighbors
-(KNN OVA)}
+\textbf{Exemples de classifieurs utilisant OVA :}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Régression Logistique (OVA)}
+\item
+  \textbf{SVM (OVA)}
+\end{itemize}
 
 \subsubsection{2. One-Versus-One (OVO)}\label{one-versus-one-ovo}
 
@@ -294,9 +319,15 @@ modèle compare seulement deux classes à la fois.
 grand nombre de modèles. - Peut nécessiter plus de ressources pour
 l'inférence.
 
-\textbf{Exemples de classifieurs utilisant OVO :} - \textbf{Régression
-Logistique (OVO)} - \textbf{SVM (OVO)} - \textbf{K-Nearest Neighbors
-(KNN OVO)}
+\textbf{Exemples de classifieurs utilisant OVO :}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Régression Logistique (OVO)}
+\item
+  \textbf{SVM (OVO)}
+\end{itemize}
 
 
 

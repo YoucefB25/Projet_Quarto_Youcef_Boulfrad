@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Présentation des techniques de classification supervisée utilisées – Cours : Méthodes de Classification</title>
+<title>Régression Multinomiale (Softmax Regression) – Cours : Méthodes de Classification</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -96,7 +130,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Préparation des données</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./presentation.html" aria-current="page"> 
+    <a class="nav-link" href="./presentation.html"> 
 <span class="menu-text">Présentation des méthodes</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -174,18 +208,19 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#classification-paramétrique-vs-non-paramétrique" id="toc-classification-paramétrique-vs-non-paramétrique" class="nav-link active" data-scroll-target="#classification-paramétrique-vs-non-paramétrique">Classification Paramétrique vs Non-Paramétrique</a></li>
-  <li><a href="#classifieurs-multiclasses-natifs-vs-classifieurs-binaires-adaptés" id="toc-classifieurs-multiclasses-natifs-vs-classifieurs-binaires-adaptés" class="nav-link" data-scroll-target="#classifieurs-multiclasses-natifs-vs-classifieurs-binaires-adaptés">Classifieurs Multiclasses Natifs vs Classifieurs Binaires Adaptés</a></li>
-  <li><a href="#one-versus-all-ova-vs-one-versus-one-ovo" id="toc-one-versus-all-ova-vs-one-versus-one-ovo" class="nav-link" data-scroll-target="#one-versus-all-ova-vs-one-versus-one-ovo">One-Versus-All (OVA) vs One-Versus-One (OVO)</a></li>
+  <li><a href="#théorie" id="toc-théorie" class="nav-link active" data-scroll-target="#théorie">Théorie</a></li>
+  <li><a href="#hyperparamètre-utilisé" id="toc-hyperparamètre-utilisé" class="nav-link" data-scroll-target="#hyperparamètre-utilisé">Hyperparamètre utilisé</a></li>
+  <li><a href="#métriques-dévaluation" id="toc-métriques-dévaluation" class="nav-link" data-scroll-target="#métriques-dévaluation">Métriques d’évaluation</a></li>
+  <li><a href="#recherche-du-meilleur-c-et-évaluation" id="toc-recherche-du-meilleur-c-et-évaluation" class="nav-link" data-scroll-target="#recherche-du-meilleur-c-et-évaluation">Recherche du meilleur <code>C</code> et évaluation</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="presentation.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="regression_multinomiale.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Présentation des techniques de classification supervisée utilisées</h1>
+<h1 class="title">Régression Multinomiale (Softmax Regression)</h1>
 </div>
 
 
@@ -202,71 +237,162 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="classification-paramétrique-vs-non-paramétrique" class="level2">
-<h2 class="anchored" data-anchor-id="classification-paramétrique-vs-non-paramétrique">Classification Paramétrique vs Non-Paramétrique</h2>
-<p>En classification supervisée, les algorithmes peuvent être divisés en <strong>méthodes paramétriques</strong> et <strong>méthodes non-paramétriques</strong>. Cette distinction repose sur la manière dont les modèles apprennent et généralisent les données.</p>
-<section id="méthodes-paramétriques" class="level3">
-<h3 class="anchored" data-anchor-id="méthodes-paramétriques">1. Méthodes Paramétriques</h3>
-<p>Les modèles paramétriques supposent l’existence d’une distribution sous-jacente aux données et estiment ses paramètres à partir des données d’entrainement.</p>
-<section id="classifieurs-paramétriques-utilisés" class="level4">
-<h4 class="anchored" data-anchor-id="classifieurs-paramétriques-utilisés">Classifieurs paramétriques utilisés :</h4>
+<section id="théorie" class="level2">
+<h2 class="anchored" data-anchor-id="théorie">Théorie</h2>
+<p>La <strong>régression multinomiale</strong>, aussi appelée <strong>régression logistique multinomiale</strong>, est une extension de la régression logistique qui permet de gérer plusieurs classes. Elle utilise une fonction <strong>Softmax</strong> en sortie pour assigner une probabilité à chaque classe.</p>
+</section>
+<section id="hyperparamètre-utilisé" class="level2">
+<h2 class="anchored" data-anchor-id="hyperparamètre-utilisé">Hyperparamètre utilisé</h2>
+<p>Nous allons optimiser :</p>
 <ul>
-<li><strong>Régression Logistique (OVA et OVO)</strong></li>
-<li><strong>Régression Multinomiale (Softmax Regression)</strong></li>
-<li><strong>Analyse Discriminante Linéaire (LDA)</strong></li>
-<li><strong>Analyse Discriminante Quadratique (QDA)</strong></li>
-<li><strong>Classifieur Bayésien Naïf</strong></li>
+<li><strong>Paramètre de régularisation (<code>C</code>)</strong> : contrôle la pénalisation de la complexité du modèle et est sélectionné en fonction de la précision sur l’ensemble de validation.</li>
 </ul>
 </section>
-</section>
-<section id="méthodes-non-paramétriques" class="level3">
-<h3 class="anchored" data-anchor-id="méthodes-non-paramétriques">2. Méthodes Non-Paramétriques</h3>
-<p>Les modèles non-paramétriques ne supposent pas l’existence d’une distribution sous-jacente aux données. Ils estiment les limites entre les classes de façon “gloutonne” en maximisant les différences inter-classes et minisant les différences intra-classes sur les données d’entrainement.</p>
-<section id="classifieurs-non-paramétriques-utilisés" class="level4">
-<h4 class="anchored" data-anchor-id="classifieurs-non-paramétriques-utilisés">Classifieurs non-paramétriques utilisés :</h4>
+<section id="métriques-dévaluation" class="level2">
+<h2 class="anchored" data-anchor-id="métriques-dévaluation">Métriques d’évaluation</h2>
+<p>Nous afficherons :</p>
 <ul>
-<li><strong>Arbre de Décision (CART)</strong></li>
-<li><strong>Forêt Aléatoire (Random Forest)</strong></li>
-<li><strong>K-Nearest Neighbors (KNN - Multiclasse, OVA et OVO)</strong></li>
-<li><strong>Machines à Vecteurs de Support (SVM - OVA et OVO)</strong></li>
-<li><strong>Réseau de Neurones (MLP avec sortie Softmax)</strong></li>
+<li><p><strong>Matrice de confusion</strong> : montrant les erreurs de classification sur l’échantillon de test.</p></li>
+<li><p><strong>Taux de bien classés sur l’échantillon de validation</strong> avec le meilleur hyperparamètre.</p></li>
+<li><p><strong>Taux de bien classés sur l’échantillon de test</strong> avec ce même hyperparamètre.</p></li>
+<li><p><strong>Taux de bien classés par classe sur l’échantillon de test</strong> pour observer la précision sur chaque classe.</p></li>
 </ul>
-<hr>
 </section>
-</section>
-</section>
-<section id="classifieurs-multiclasses-natifs-vs-classifieurs-binaires-adaptés" class="level2">
-<h2 class="anchored" data-anchor-id="classifieurs-multiclasses-natifs-vs-classifieurs-binaires-adaptés">Classifieurs Multiclasses Natifs vs Classifieurs Binaires Adaptés</h2>
-<p>Certains classifieurs sont conçus pour gérer directement plusieurs classes (<strong>classifieurs multiclasses natifs</strong>), tandis que d’autres sont conçus pour distinguer uniquement deux classes et doivent être adaptés pour des problèmes multiclasses.</p>
-<section id="classifieurs-multiclasses-natifs" class="level3">
-<h3 class="anchored" data-anchor-id="classifieurs-multiclasses-natifs">1. Classifieurs Multiclasses Natifs</h3>
-<p>Ces classifieurs peuvent traiter directement un problème à plusieurs classes sans nécessiter de transformation : - <strong>Régression Multinomiale (Softmax Regression)</strong> - <strong>Analyse Discriminante Linéaire (LDA)</strong> - <strong>Analyse Discriminante Quadratique (QDA)</strong> - <strong>Classifieur Bayésien Naïf</strong> - <strong>Arbre de Décision (CART)</strong> - <strong>Forêt Aléatoire (Random Forest)</strong> - <strong>Réseau de Neurones (MLP avec sortie Softmax)</strong> - <strong>K-Nearest Neighbors (KNN Multiclasse)</strong></p>
-</section>
-<section id="classifieurs-binaires-adaptés" class="level3">
-<h3 class="anchored" data-anchor-id="classifieurs-binaires-adaptés">2. Classifieurs Binaires Adaptés</h3>
-<p>Les classifieurs binaires doivent être transformés pour gérer plusieurs classes en utilisant des approches comme <strong>One-Versus-All (OVA)</strong> ou <strong>One-Versus-One (OVO)</strong> : - <strong>Régression Logistique</strong> (adaptée en OVA et OVO) - <strong>Support Vector Machines (SVM)</strong> (adaptées en OVA et OVO) - <strong>K-Nearest Neighbors (KNN - OVA et OVO)</strong></p>
-<hr>
-</section>
-</section>
-<section id="one-versus-all-ova-vs-one-versus-one-ovo" class="level2">
-<h2 class="anchored" data-anchor-id="one-versus-all-ova-vs-one-versus-one-ovo">One-Versus-All (OVA) vs One-Versus-One (OVO)</h2>
-<p>Les approches <strong>OVA</strong> et <strong>OVO</strong> permettent d’adapter des classifieurs binaires aux problèmes multiclasses.</p>
-<section id="one-versus-all-ova" class="level3">
-<h3 class="anchored" data-anchor-id="one-versus-all-ova">1. One-Versus-All (OVA)</h3>
-<p>Avec cette approche, un modèle binaire est entraîné pour chaque classe en la comparant à toutes les autres classes regroupées. Pour une classification à <strong>N classes</strong>, <strong>N modèles binaires</strong> sont entraînés.</p>
-<p><strong>Avantages :</strong> - Moins de modèles à entraîner (<strong>N</strong> contre <strong>N(N-1)/2</strong> en OVO), soit 7 modèles pour 7 classes. - Plus efficace pour les jeux de données avec un grand nombre de classes.</p>
-<p><strong>Inconvénients :</strong> - Les classes déséquilibrées peuvent poser problème car le modèle doit distinguer une classe contre un ensemble de classes plus nombreuses. - Peut générer des scores de confiance biaisés si les classes sont très déséquilibrées.</p>
-<p><strong>Exemples de classifieurs utilisant OVA :</strong> - <strong>Régression Logistique (OVA)</strong> - <strong>SVM (OVA)</strong> - <strong>K-Nearest Neighbors (KNN OVA)</strong></p>
-</section>
-<section id="one-versus-one-ovo" class="level3">
-<h3 class="anchored" data-anchor-id="one-versus-one-ovo">2. One-Versus-One (OVO)</h3>
-<p>Avec l’approche OVO, un modèle est entraîné pour chaque paire de classes. Pour une classification à <strong>N classes</strong>, <strong>N(N-1)/2</strong> modèles binaires sont entraînés, soit 21 modèles pour 7 classes.</p>
-<p><strong>Avantages :</strong> - Meilleure séparation entre classes si elles sont bien distinctes. - Moins sensible aux classes déséquilibrées car chaque modèle compare seulement deux classes à la fois.</p>
-<p><strong>Inconvénients :</strong> - Temps d’entraînement plus long à cause du grand nombre de modèles. - Peut nécessiter plus de ressources pour l’inférence.</p>
-<p><strong>Exemples de classifieurs utilisant OVO :</strong> - <strong>Régression Logistique (OVO)</strong> - <strong>SVM (OVO)</strong> - <strong>K-Nearest Neighbors (KNN OVO)</strong></p>
+<section id="recherche-du-meilleur-c-et-évaluation" class="level2">
+<h2 class="anchored" data-anchor-id="recherche-du-meilleur-c-et-évaluation">Recherche du meilleur <code>C</code> et évaluation</h2>
+<div id="60941dde" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, accuracy_score</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 🔇 Suppression des avertissements inutiles</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>, category<span class="op">=</span><span class="pp">UserWarning</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 🔄 Chargement des ensembles de données</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>train_data <span class="op">=</span> pd.read_csv(<span class="st">'covertype_train.csv'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>val_data <span class="op">=</span> pd.read_csv(<span class="st">'covertype_val.csv'</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>test_data <span class="op">=</span> pd.read_csv(<span class="st">'covertype_test.csv'</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 📊 Préparation des données</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>X_train, y_train <span class="op">=</span> train_data.drop(<span class="st">'Cover_Type'</span>, axis<span class="op">=</span><span class="dv">1</span>), train_data[<span class="st">'Cover_Type'</span>]</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>X_val, y_val <span class="op">=</span> val_data.drop(<span class="st">'Cover_Type'</span>, axis<span class="op">=</span><span class="dv">1</span>), val_data[<span class="st">'Cover_Type'</span>]</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>X_test, y_test <span class="op">=</span> test_data.drop(<span class="st">'Cover_Type'</span>, axis<span class="op">=</span><span class="dv">1</span>), test_data[<span class="st">'Cover_Type'</span>]</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 🔢 Normalisation des données</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>X_train, X_val, X_test <span class="op">=</span> scaler.fit_transform(X_train), scaler.transform(X_val), scaler.transform(X_test)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 🎯 Recherche du meilleur hyperparamètre C</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>C_values <span class="op">=</span> np.arange(<span class="fl">0.1</span>, <span class="fl">1.1</span>, <span class="fl">0.1</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>val_accuracies <span class="op">=</span> []</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> C <span class="kw">in</span> C_values:</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> LogisticRegression(multi_class<span class="op">=</span><span class="st">'multinomial'</span>, solver<span class="op">=</span><span class="st">'saga'</span>, C<span class="op">=</span>C, penalty<span class="op">=</span><span class="st">'l2'</span>, max_iter<span class="op">=</span><span class="dv">500</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    model.fit(X_train, y_train)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> accuracy_score(y_val, model.predict(X_val))</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    val_accuracies.append((C, acc))</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Sélection du meilleur hyperparamètre</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>best_C, best_val_acc <span class="op">=</span> <span class="bu">max</span>(val_accuracies, key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>])</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 📈 Affichage du graphique</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>plt.plot(C_values, [acc <span class="cf">for</span> C, acc <span class="kw">in</span> val_accuracies], marker<span class="op">=</span><span class="st">'o'</span>, linestyle<span class="op">=</span><span class="st">'dashed'</span>, label<span class="op">=</span><span class="st">"Validation"</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Paramètre de régularisation (C)"</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Précision sur validation"</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Impact de la régularisation sur la performance de la régression multinomiale"</span>)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 🏆 Modèle final avec le meilleur hyperparamètre</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>final_model <span class="op">=</span> LogisticRegression(multi_class<span class="op">=</span><span class="st">'multinomial'</span>, solver<span class="op">=</span><span class="st">'saga'</span>, C<span class="op">=</span>best_C, penalty<span class="op">=</span><span class="st">'l2'</span>, max_iter<span class="op">=</span><span class="dv">500</span>)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>final_model.fit(X_train, y_train)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>y_test_pred <span class="op">=</span> final_model.predict(X_test)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co"># 📊 Matrice de confusion</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>conf_matrix <span class="op">=</span> confusion_matrix(y_test, y_test_pred)</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="co"># 📈 Calcul des taux de bien classés par classe</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>class_accuracies <span class="op">=</span> conf_matrix.diagonal() <span class="op">/</span> conf_matrix.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>overall_test_accuracy <span class="op">=</span> accuracy_score(y_test, y_test_pred)</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="co"># 📝 Affichage des résultats</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">🔹 Meilleur hyperparamètre C sur l'échantillon de validation : </span><span class="sc">{</span>best_C<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Taux de bien classés sur l'échantillon de validation avec cet hyperparamètre : </span><span class="sc">{</span>best_val_acc<span class="sc">:.2%}</span><span class="ss">"</span>)</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">📊 Matrice de confusion sur l'échantillon de test, avec le meilleur hyperparamètre :"</span>)</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(conf_matrix)</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">📈 Taux de bien classés par classe sur l'échantillon de test, avec le meilleur hyperparamètre  :"</span>)</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, acc <span class="kw">in</span> <span class="bu">enumerate</span>(class_accuracies, start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Classe </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss"> : </span><span class="sc">{</span>acc<span class="sc">:.2%}</span><span class="ss">"</span>)</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">🔹 Taux de bien classés sur l'échantillon de test avec le meilleur hyperparamètre : </span><span class="sc">{</span>overall_test_accuracy<span class="sc">:.2%}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(
+/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="regression_multinomiale_files/figure-html/cell-2-output-2.png" width="698" height="525" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/ensai/.local/lib/python3.10/site-packages/sklearn/linear_model/_logistic.py:1247: FutureWarning: 'multi_class' was deprecated in version 1.5 and will be removed in 1.7. From then on, it will always use 'multinomial'. Leave it to its default value to avoid this warning.
+  warnings.warn(</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+🔹 Meilleur hyperparamètre C sur l'échantillon de validation : 0.10
+Taux de bien classés sur l'échantillon de validation avec cet hyperparamètre : 69.14%
+
+📊 Matrice de confusion sur l'échantillon de test, avec le meilleur hyperparamètre :
+[[1416  583    1    0    6    1  112]
+ [ 511 2142   87    1   40   44    8]
+ [   0   48 1249   38    8   87    0]
+ [   0    0   61   34    0   15    0]
+ [   2  257   24    0   92    5    0]
+ [   0   64  374    3    8  245    0]
+ [ 163    1    3    0    0    0  654]]
+
+📈 Taux de bien classés par classe sur l'échantillon de test, avec le meilleur hyperparamètre  :
+Classe 1 : 66.82%
+Classe 2 : 75.61%
+Classe 3 : 87.34%
+Classe 4 : 30.91%
+Classe 5 : 24.21%
+Classe 6 : 35.30%
+Classe 7 : 79.66%
+
+🔹 Taux de bien classés sur l'échantillon de test avec le meilleur hyperparamètre : 69.54%</code></pre>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

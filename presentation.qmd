@@ -10,6 +10,7 @@ En classification supervisée, les algorithmes peuvent être divisés en **méth
 Les modèles paramétriques supposent l'existence d'une distribution sous-jacente aux données et estiment ses paramètres à partir des données d'entrainement. 
 
 #### Classifieurs paramétriques utilisés :
+
 - **Régression Logistique (OVA et OVO)**
 - **Régression Multinomiale (Softmax Regression)**
 - **Analyse Discriminante Linéaire (LDA)**
@@ -20,9 +21,10 @@ Les modèles paramétriques supposent l'existence d'une distribution sous-jacent
 Les modèles non-paramétriques ne supposent pas l'existence d'une distribution sous-jacente aux données. Ils estiment les limites entre les classes de façon "gloutonne" en maximisant les différences inter-classes et minisant les différences intra-classes sur les données d'entrainement.
 
 #### Classifieurs non-paramétriques utilisés :
+
 - **Arbre de Décision (CART)**
 - **Forêt Aléatoire (Random Forest)**
-- **K-Nearest Neighbors (KNN - Multiclasse, OVA et OVO)**
+- **K-Nearest Neighbors (KNN)**
 - **Machines à Vecteurs de Support (SVM - OVA et OVO)**
 - **Réseau de Neurones (MLP avec sortie Softmax)**
 
@@ -34,6 +36,7 @@ Certains classifieurs sont conçus pour gérer directement plusieurs classes (**
 
 ### 1. Classifieurs Multiclasses Natifs
 Ces classifieurs peuvent traiter directement un problème à plusieurs classes sans nécessiter de transformation :
+
 - **Régression Multinomiale (Softmax Regression)**
 - **Analyse Discriminante Linéaire (LDA)**
 - **Analyse Discriminante Quadratique (QDA)**
@@ -41,13 +44,13 @@ Ces classifieurs peuvent traiter directement un problème à plusieurs classes s
 - **Arbre de Décision (CART)**
 - **Forêt Aléatoire (Random Forest)**
 - **Réseau de Neurones (MLP avec sortie Softmax)**
-- **K-Nearest Neighbors (KNN Multiclasse)**
+- **K-Nearest Neighbors (KNN)**
 
 ### 2. Classifieurs Binaires Adaptés
 Les classifieurs binaires doivent être transformés pour gérer plusieurs classes en utilisant des approches comme **One-Versus-All (OVA)** ou **One-Versus-One (OVO)** :
+
 - **Régression Logistique** (adaptée en OVA et OVO)
 - **Support Vector Machines (SVM)** (adaptées en OVA et OVO)
-- **K-Nearest Neighbors (KNN - OVA et OVO)**
 
 ---
 
@@ -67,9 +70,9 @@ Avec cette approche, un modèle binaire est entraîné pour chaque classe en la 
 - Peut générer des scores de confiance biaisés si les classes sont très déséquilibrées.
 
 **Exemples de classifieurs utilisant OVA :**
+
 - **Régression Logistique (OVA)**
 - **SVM (OVA)**
-- **K-Nearest Neighbors (KNN OVA)**
 
 ### 2. One-Versus-One (OVO)
 Avec l’approche OVO, un modèle est entraîné pour chaque paire de classes. Pour une classification à **N classes**, **N(N-1)/2** modèles binaires sont entraînés, soit 21 modèles pour 7 classes.
@@ -83,7 +86,7 @@ Avec l’approche OVO, un modèle est entraîné pour chaque paire de classes. P
 - Peut nécessiter plus de ressources pour l’inférence.
 
 **Exemples de classifieurs utilisant OVO :**
+
 - **Régression Logistique (OVO)**
 - **SVM (OVO)**
-- **K-Nearest Neighbors (KNN OVO)**
 
