@@ -20,6 +20,24 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+#TOC {
+    max-width: 250px;  /* Ajuste la largeur du TOC */
+    position: sticky;
+    top: 100px;
+    z-index: 10;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-left: 50px;
+}
+
+/* Ajuster la largeur du tableau pour éviter qu’il ne touche le TOC */
+.content table {
+    max-width: 90%; /* Réduire la largeur du tableau */
+    margin-left: auto;
+    margin-right: 50px;
+    overflow-x: auto; /* Ajoute un défilement horizontal si nécessaire */
+}
 </style>
 
 
@@ -209,6 +227,7 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="comparaison-des-performances-des-modèles" class="level2">
 <h2 class="anchored" data-anchor-id="comparaison-des-performances-des-modèles">Comparaison des Performances des Modèles</h2>
+<p><strong>(% de bien classés)</strong></p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 11%">
@@ -388,28 +407,24 @@ ul.task-list li input[type="checkbox"] {
 <h1>Méthodes les Plus Faibles :</h1>
 <ul>
 <li><strong>Les SVM et Les Régressions Logistiques</strong> (OVA et OVO) sous-performent sur les classes minoritaires (<strong>moins de 40% pour certaines</strong>).</li>
-<li><strong>QDA, LDA et Bayésien Naïf</strong> sont globalement moins efficaces (<strong>58.60% et 61.70%</strong> respectivement).</li>
+<li><strong>QDA, LDA et Bayésien Naïf</strong> sont globalement moins efficaces (<strong>58.60%, 64.04% et 61.70%</strong> respectivement).</li>
 </ul>
 </section>
 <section id="méthodes-paramétriques-vs-non-paramétriques" class="level1">
 <h1>Méthodes Paramétriques vs Non-Paramétriques</h1>
 <p>Les modèles <strong>non-paramétriques surpassent largement les modèles paramétriques</strong> : - <strong>La Forêt Aléatoire (86.55%)</strong>, <strong>le Réseau de Neurones (84.38%)</strong>, <strong>KNN (81.42%)</strong> et <strong>l’Arbre CART (78.35%)</strong> dominent le classement. - À l’inverse, <strong>LDA (64.04%)</strong>, <strong>QDA (58.60%)</strong> et <strong>Bayésien Naïf (61.70%)</strong> sont nettement moins performants.</p>
-<p>Les <strong>modèles non-paramétriques</strong> sont plus flexibles et capturent mieux des structures complexes dans les données, tandis que les modèles paramétriques reposent sur des hypothèses restrictives.</p>
+<p>Les <strong>modèles non-paramétriques</strong> sont plus flexibles et capturent mieux des structures complexes dans les données, tandis que les modèles paramétriques reposent sur des hypothèses restrictives. Par exemple, <strong>LDA</strong> et <strong>QDA</strong> présupposent une <strong>distribution gaussienne des features</strong>, ce qui se vérifie difficilement, surtout si une large partie des features est catégorielle (ce qui est le cas ici). Le <strong>bayésien naïf</strong>, quant à lui, présuppose <strong>l’indépendance des features</strong> les unes par rapport aux autres, ce qui est peu réaliste dans la vraie vie, surtout avec des données issues de la nature comme ici.</p>
 </section>
 <section id="multiclasse-natif-vs-adapté-ovaovo" class="level1">
 <h1>Multiclasse Natif vs Adapté (OVA/OVO)</h1>
 <p>Les méthodes <strong>multiclasse natives</strong> (comme <strong>Forêt Aléatoire, Arbre CART, Réseau de Neurones</strong>) ont des performances meilleures que les modèles binaires adaptés <strong>OVA et OVO</strong>.</p>
 <ul>
 <li><strong>La Forêt Aléatoire (86.55%)</strong> et <strong>le Réseau de Neurones (84.38%)</strong>, qui sont naturellement adaptés au multiclasse, surpassent les modèles <strong>SVM OVA (72.22%)</strong> et <strong>SVM OVO (72.80%)</strong>, ainsi que les <strong>régressions logistiques OVA et OVO</strong>.</li>
+<li>Ainsi, même si les <strong>SVM</strong> sont non-paramétriques, et performent mieux que les modèles paramétriques (LDA, QDA, Bayésien naïf), ils sont nativement binaires, et performent moins bien pour classifier 7 classes que les modèles nativement multiclasse.</li>
 <li>Les méthodes <strong>binaires adaptées</strong> (OVA et OVO) peinent surtout sur les classes minoritaires, avec des scores très faibles (<strong>ex. SVM OVA : 20.00% sur la classe 4 !</strong>).</li>
+<li>Parmi ces méthodes binaires adaptées, les approches OVO font mieux que les approches OVA sur les classes à petits effectifs (<strong>ex. Reg Log OVO fait 34.55% sur la classe 4, contre 26.36% pour Reg Log OVA</strong>).</li>
+<li>Ces méthodes restent toutefois inférieures aux méthodes <strong>nativement multiclasse</strong>.</li>
 </ul>
-<section id="explication" class="level3">
-<h3 class="anchored" data-anchor-id="explication">Explication :</h3>
-<ul>
-<li><strong>OVA</strong> force une classe unique à se démarquer contre toutes les autres.</li>
-<li><strong>OVO</strong> compare les classes deux à deux, ce qui est sous-optimal pour des classes déséquilibrées.</li>
-</ul>
-</section>
 </section>
 <section id="résumé-final" class="level1">
 <h1>Résumé Final</h1>

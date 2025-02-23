@@ -501,14 +501,14 @@
     "href": "conclusions.html",
     "title": "Comparaison des Méthodes de Classification",
     "section": "",
-    "text": "Classe (effectif)\nKNN\nLDA\nQDA\nBayesien Naïf\nArbre CART\nForêt Aléatoire\nReg Log OVA\nReg Log OVO\nReg Multinom\nRéseau Neurones\nSVM OVA\nSVM OVO\n\n\n\n\n1 (10592)\n78.48\n63.43\n54.88\n61.35\n74.61\n82.73\n63.10\n66.97\n66.82\n78.29\n68.29\n70.55\n\n\n2 (14165)\n80.76\n65.83\n55.10\n61.14\n76.84\n87.89\n75.89\n75.40\n75.61\n86.69\n78.57\n78.61\n\n\n3 (7151)\n86.36\n63.08\n66.29\n65.66\n85.03\n94.55\n88.81\n86.78\n87.34\n84.55\n90.63\n90.35\n\n\n4 (549)\n63.64\n48.18\n48.18\n60.00\n67.27\n64.55\n26.36\n34.55\n30.91\n70.00\n20.00\n21.82\n\n\n5 (1899)\n77.89\n47.11\n50.26\n46.32\n69.21\n71.84\n16.58\n25.79\n24.21\n83.95\n33.16\n34.47\n\n\n6 (3473)\n73.05\n52.45\n48.27\n44.81\n74.06\n78.67\n27.67\n40.06\n35.30\n86.31\n38.33\n38.62\n\n\n7 (4102)\n93.79\n80.88\n80.88\n79.29\n90.86\n94.28\n81.36\n80.39\n79.66\n92.33\n82.10\n81.49\n\n\nTotal (41931)\n81.42\n64.04\n58.60\n61.70\n78.35\n86.55\n68.07\n69.99\n69.54\n84.38\n72.22\n72.80"
+    "text": "(% de bien classés)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nClasse (effectif)\nKNN\nLDA\nQDA\nBayesien Naïf\nArbre CART\nForêt Aléatoire\nReg Log OVA\nReg Log OVO\nReg Multinom\nRéseau Neurones\nSVM OVA\nSVM OVO\n\n\n\n\n1 (10592)\n78.48\n63.43\n54.88\n61.35\n74.61\n82.73\n63.10\n66.97\n66.82\n78.29\n68.29\n70.55\n\n\n2 (14165)\n80.76\n65.83\n55.10\n61.14\n76.84\n87.89\n75.89\n75.40\n75.61\n86.69\n78.57\n78.61\n\n\n3 (7151)\n86.36\n63.08\n66.29\n65.66\n85.03\n94.55\n88.81\n86.78\n87.34\n84.55\n90.63\n90.35\n\n\n4 (549)\n63.64\n48.18\n48.18\n60.00\n67.27\n64.55\n26.36\n34.55\n30.91\n70.00\n20.00\n21.82\n\n\n5 (1899)\n77.89\n47.11\n50.26\n46.32\n69.21\n71.84\n16.58\n25.79\n24.21\n83.95\n33.16\n34.47\n\n\n6 (3473)\n73.05\n52.45\n48.27\n44.81\n74.06\n78.67\n27.67\n40.06\n35.30\n86.31\n38.33\n38.62\n\n\n7 (4102)\n93.79\n80.88\n80.88\n79.29\n90.86\n94.28\n81.36\n80.39\n79.66\n92.33\n82.10\n81.49\n\n\nTotal (41931)\n81.42\n64.04\n58.60\n61.70\n78.35\n86.55\n68.07\n69.99\n69.54\n84.38\n72.22\n72.80"
   },
   {
     "objectID": "conclusions.html#comparaison-des-performances-des-modèles",
     "href": "conclusions.html#comparaison-des-performances-des-modèles",
     "title": "Comparaison des Méthodes de Classification",
     "section": "",
-    "text": "Classe (effectif)\nKNN\nLDA\nQDA\nBayesien Naïf\nArbre CART\nForêt Aléatoire\nReg Log OVA\nReg Log OVO\nReg Multinom\nRéseau Neurones\nSVM OVA\nSVM OVO\n\n\n\n\n1 (10592)\n78.48\n63.43\n54.88\n61.35\n74.61\n82.73\n63.10\n66.97\n66.82\n78.29\n68.29\n70.55\n\n\n2 (14165)\n80.76\n65.83\n55.10\n61.14\n76.84\n87.89\n75.89\n75.40\n75.61\n86.69\n78.57\n78.61\n\n\n3 (7151)\n86.36\n63.08\n66.29\n65.66\n85.03\n94.55\n88.81\n86.78\n87.34\n84.55\n90.63\n90.35\n\n\n4 (549)\n63.64\n48.18\n48.18\n60.00\n67.27\n64.55\n26.36\n34.55\n30.91\n70.00\n20.00\n21.82\n\n\n5 (1899)\n77.89\n47.11\n50.26\n46.32\n69.21\n71.84\n16.58\n25.79\n24.21\n83.95\n33.16\n34.47\n\n\n6 (3473)\n73.05\n52.45\n48.27\n44.81\n74.06\n78.67\n27.67\n40.06\n35.30\n86.31\n38.33\n38.62\n\n\n7 (4102)\n93.79\n80.88\n80.88\n79.29\n90.86\n94.28\n81.36\n80.39\n79.66\n92.33\n82.10\n81.49\n\n\nTotal (41931)\n81.42\n64.04\n58.60\n61.70\n78.35\n86.55\n68.07\n69.99\n69.54\n84.38\n72.22\n72.80"
+    "text": "(% de bien classés)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nClasse (effectif)\nKNN\nLDA\nQDA\nBayesien Naïf\nArbre CART\nForêt Aléatoire\nReg Log OVA\nReg Log OVO\nReg Multinom\nRéseau Neurones\nSVM OVA\nSVM OVO\n\n\n\n\n1 (10592)\n78.48\n63.43\n54.88\n61.35\n74.61\n82.73\n63.10\n66.97\n66.82\n78.29\n68.29\n70.55\n\n\n2 (14165)\n80.76\n65.83\n55.10\n61.14\n76.84\n87.89\n75.89\n75.40\n75.61\n86.69\n78.57\n78.61\n\n\n3 (7151)\n86.36\n63.08\n66.29\n65.66\n85.03\n94.55\n88.81\n86.78\n87.34\n84.55\n90.63\n90.35\n\n\n4 (549)\n63.64\n48.18\n48.18\n60.00\n67.27\n64.55\n26.36\n34.55\n30.91\n70.00\n20.00\n21.82\n\n\n5 (1899)\n77.89\n47.11\n50.26\n46.32\n69.21\n71.84\n16.58\n25.79\n24.21\n83.95\n33.16\n34.47\n\n\n6 (3473)\n73.05\n52.45\n48.27\n44.81\n74.06\n78.67\n27.67\n40.06\n35.30\n86.31\n38.33\n38.62\n\n\n7 (4102)\n93.79\n80.88\n80.88\n79.29\n90.86\n94.28\n81.36\n80.39\n79.66\n92.33\n82.10\n81.49\n\n\nTotal (41931)\n81.42\n64.04\n58.60\n61.70\n78.35\n86.55\n68.07\n69.99\n69.54\n84.38\n72.22\n72.80"
   },
   {
     "objectID": "conclusions.html#explication",
@@ -516,5 +516,12 @@
     "title": "Comparaison des Méthodes de Classification",
     "section": "Explication :",
     "text": "Explication :\n\nOVA force une classe unique à se démarquer contre toutes les autres.\nOVO compare les classes deux à deux, ce qui est sous-optimal pour des classes déséquilibrées."
+  },
+  {
+    "objectID": "conclusions.html#comparaison-des-performances-des-modèles-de-bien-classés",
+    "href": "conclusions.html#comparaison-des-performances-des-modèles-de-bien-classés",
+    "title": "Comparaison des Méthodes de Classification",
+    "section": "",
+    "text": "Classe (effectif)\nKNN\nLDA\nQDA\nBayesien Naïf\nArbre CART\nForêt Aléatoire\nReg Log OVA\nReg Log OVO\nReg Multinom\nRéseau Neurones\nSVM OVA\nSVM OVO\n\n\n\n\n1 (10592)\n78.48\n63.43\n54.88\n61.35\n74.61\n82.73\n63.10\n66.97\n66.82\n78.29\n68.29\n70.55\n\n\n2 (14165)\n80.76\n65.83\n55.10\n61.14\n76.84\n87.89\n75.89\n75.40\n75.61\n86.69\n78.57\n78.61\n\n\n3 (7151)\n86.36\n63.08\n66.29\n65.66\n85.03\n94.55\n88.81\n86.78\n87.34\n84.55\n90.63\n90.35\n\n\n4 (549)\n63.64\n48.18\n48.18\n60.00\n67.27\n64.55\n26.36\n34.55\n30.91\n70.00\n20.00\n21.82\n\n\n5 (1899)\n77.89\n47.11\n50.26\n46.32\n69.21\n71.84\n16.58\n25.79\n24.21\n83.95\n33.16\n34.47\n\n\n6 (3473)\n73.05\n52.45\n48.27\n44.81\n74.06\n78.67\n27.67\n40.06\n35.30\n86.31\n38.33\n38.62\n\n\n7 (4102)\n93.79\n80.88\n80.88\n79.29\n90.86\n94.28\n81.36\n80.39\n79.66\n92.33\n82.10\n81.49\n\n\nTotal (41931)\n81.42\n64.04\n58.60\n61.70\n78.35\n86.55\n68.07\n69.99\n69.54\n84.38\n72.22\n72.80"
   }
 ]
