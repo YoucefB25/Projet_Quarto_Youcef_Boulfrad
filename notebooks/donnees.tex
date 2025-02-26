@@ -1,0 +1,332 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,breakanywhere=true,commandchars=\\\{\}}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Téléchargement et Préparation du Dataset Covertype},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Téléchargement et Préparation du Dataset Covertype}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\section{Présentation de la Base de Données
+Covertype}\label{pruxe9sentation-de-la-base-de-donnuxe9es-covertype}
+
+La base de données \textbf{Covertype} provient de
+l'\href{https://archive.ics.uci.edu/ml/datasets/Covertype}{UCI Machine
+Learning Repository}. Elle est utilisée pour \textbf{classer les types
+de couvert forestier} à partir de mesures cartographiques (sol,
+altitude, pente, distance aux points d'eau, etc.).
+
+\subsection{Caractéristiques du
+Dataset}\label{caractuxe9ristiques-du-dataset}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Nombre d'observations} : 581 012
+\item
+  \textbf{Nombre de variables} : 54 (features continues et binaires)
+\item
+  \textbf{Nombre de classes} : 7 types de couverture forestière (1 à 7)
+\item
+  \textbf{Problème à résoudre} : Classification supervisée
+\end{itemize}
+
+Les classes ne sont \textbf{pas équilibrées}, ce qui peut influencer la
+performance des modèles de classification. Les proportions des classes
+dans l'ensemble original sont les suivantes :
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Classe & Type de forêt & Effectif & Proportion (\%) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Épicéa & 211 840 & 36.5 \\
+2 & Pin & 283 301 & 48.8 \\
+3 & Peuplier & 35 754 & 6.2 \\
+4 & Bouleau & 2 747 & 0.5 \\
+5 & Érable & 9 493 & 1.6 \\
+6 & Hêtre & 17 367 & 3.0 \\
+7 & Mélèze & 18 510 & 3.2 \\
+\end{longtable}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Objectif de
+l'Échantillonnage}\label{objectif-de-luxe9chantillonnage}
+
+\subsubsection{Pourquoi réduire la taille du dataset
+?}\label{pourquoi-ruxe9duire-la-taille-du-dataset}
+
+Le dataset \textbf{Covertype est très grand} (581 012 individus). En
+raison du \textbf{temps de calcul important}, nous avons décidé
+d'utiliser un \textbf{échantillon plus petit}, tout en conservant la
+distribution des classes.
+
+\subsubsection{Comment gérer le déséquilibre des classes
+?}\label{comment-guxe9rer-le-duxe9suxe9quilibre-des-classes}
+
+Certaines classes sont \textbf{très majoritaires} (ex : \textbf{Pin et
+Épicéa} représentent à eux seuls \textbf{85\% des données}), tandis que
+d'autres sont \textbf{très minoritaires} (ex : \textbf{Bouleau} à
+seulement \textbf{0.5\%}).\\
+Nous avons appliqué un \textbf{échantillonnage différencié} :
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Sous-échantillonnage des classes majoritaires} (Épicéa et Pin)
+  → \textbf{5\% de leurs effectifs d'origine}
+\item
+  \textbf{Sur-échantillonnage relatif des classes minoritaires}
+  (Peuplier, Bouleau, Érable, Hêtre, Mélèze) → \textbf{20\% de leurs
+  effectifs d'origine}
+\end{itemize}
+
+\textbf{Nous ne supprimons pas totalement le déséquilibre}, car nous
+souhaitons \textbf{tester nos modèles dans des conditions réalistes}, où
+certaines classes restent plus rares que d'autres.
+
+L'échantillon obtenu comptera un peu plus de 40 000 individus, dont 60\%
+seront réservés à l'entrainement des modèles, 20\% à la validation des
+hyperparamètres, et 20\% aux tests.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Téléchargement et Préparation des
+Données}\label{tuxe9luxe9chargement-et-pruxe9paration-des-donnuxe9es}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ os}
+\ImportTok{import}\NormalTok{ pandas }\ImportTok{as}\NormalTok{ pd}
+\ImportTok{from}\NormalTok{ sklearn.model\_selection }\ImportTok{import}\NormalTok{ train\_test\_split}
+
+\CommentTok{\# 📂 Correction du chemin d\textquotesingle{}accès au fichier dataset}
+\NormalTok{file\_path }\OperatorTok{=} \StringTok{"../data/covertype.gz"}  \CommentTok{\# On remonte d\textquotesingle{}un dossier pour atteindre data/}
+
+\ControlFlowTok{if} \KeywordTok{not}\NormalTok{ os.path.exists(file\_path):}
+    \ControlFlowTok{raise} \PreprocessorTok{FileNotFoundError}\NormalTok{(}\SpecialStringTok{f"❌ Le fichier }\SpecialCharTok{\{}\NormalTok{file\_path}\SpecialCharTok{\}}\SpecialStringTok{ est introuvable. Vérifiez son emplacement."}\NormalTok{)}
+
+\CommentTok{\# 🔄 Chargement des données}
+\NormalTok{column\_names }\OperatorTok{=}\NormalTok{ [}\SpecialStringTok{f\textquotesingle{}Feature\_}\SpecialCharTok{\{}\NormalTok{i}\SpecialCharTok{\}}\SpecialStringTok{\textquotesingle{}} \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{55}\NormalTok{)] }\OperatorTok{+}\NormalTok{ [}\StringTok{\textquotesingle{}Cover\_Type\textquotesingle{}}\NormalTok{]}
+\NormalTok{data }\OperatorTok{=}\NormalTok{ pd.read\_csv(file\_path, header}\OperatorTok{=}\VariableTok{None}\NormalTok{, names}\OperatorTok{=}\NormalTok{column\_names, compression}\OperatorTok{=}\StringTok{\textquotesingle{}gzip\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# 🔢 Échantillonnage différencié}
+\NormalTok{sampling\_rates }\OperatorTok{=}\NormalTok{ \{}\DecValTok{1}\NormalTok{: }\FloatTok{0.05}\NormalTok{, }\DecValTok{2}\NormalTok{: }\FloatTok{0.05}\NormalTok{, }\DecValTok{3}\NormalTok{: }\FloatTok{0.2}\NormalTok{, }\DecValTok{4}\NormalTok{: }\FloatTok{0.2}\NormalTok{, }\DecValTok{5}\NormalTok{: }\FloatTok{0.2}\NormalTok{, }\DecValTok{6}\NormalTok{: }\FloatTok{0.2}\NormalTok{, }\DecValTok{7}\NormalTok{: }\FloatTok{0.2}\NormalTok{\}}
+\NormalTok{sampled\_data }\OperatorTok{=}\NormalTok{ pd.concat([}
+\NormalTok{    data[data[}\StringTok{\textquotesingle{}Cover\_Type\textquotesingle{}}\NormalTok{] }\OperatorTok{==}\NormalTok{ cls].sample(frac}\OperatorTok{=}\NormalTok{sampling\_rates[cls], random\_state}\OperatorTok{=}\DecValTok{42}\NormalTok{)}
+    \ControlFlowTok{for}\NormalTok{ cls }\KeywordTok{in}\NormalTok{ data[}\StringTok{\textquotesingle{}Cover\_Type\textquotesingle{}}\NormalTok{].unique()}
+\NormalTok{]).reset\_index(drop}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+
+\CommentTok{\# 📊 Division en train/val/test}
+\NormalTok{train\_data, temp\_data }\OperatorTok{=}\NormalTok{ train\_test\_split(sampled\_data, test\_size}\OperatorTok{=}\FloatTok{0.4}\NormalTok{, random\_state}\OperatorTok{=}\DecValTok{42}\NormalTok{, stratify}\OperatorTok{=}\NormalTok{sampled\_data[}\StringTok{\textquotesingle{}Cover\_Type\textquotesingle{}}\NormalTok{])}
+\NormalTok{val\_data, test\_data }\OperatorTok{=}\NormalTok{ train\_test\_split(temp\_data, test\_size}\OperatorTok{=}\FloatTok{0.5}\NormalTok{, random\_state}\OperatorTok{=}\DecValTok{42}\NormalTok{, stratify}\OperatorTok{=}\NormalTok{temp\_data[}\StringTok{\textquotesingle{}Cover\_Type\textquotesingle{}}\NormalTok{])}
+
+\CommentTok{\# 📂 Sauvegarde des fichiers dans data/}
+\NormalTok{train\_data.to\_csv(}\StringTok{"../data/covertype\_train.csv"}\NormalTok{, index}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{val\_data.to\_csv(}\StringTok{"../data/covertype\_val.csv"}\NormalTok{, index}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{test\_data.to\_csv(}\StringTok{"../data/covertype\_test.csv"}\NormalTok{, index}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+
+\BuiltInTok{print}\NormalTok{(}\StringTok{"✅ Fichiers covertype\_train.csv, covertype\_val.csv et covertype\_test.csv créés avec succès dans data/"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+✅ Fichiers covertype_train.csv, covertype_val.csv et covertype_test.csv créés avec succès dans data/
+\end{verbatim}
+
+
+
+
+\end{document}

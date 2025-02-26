@@ -1,7 +1,3 @@
 # Ignore generated files
 
-*.tex
-*_files/
-exports/
-
 /.quarto/
