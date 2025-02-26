@@ -1,6 +1,6 @@
-/* Ajuster la largeur et la position du TOC */
+/* 📝 Improve TOC Styling */
 #TOC {
-    max-width: 250px;  /* Ajuste la largeur du TOC */
+    max-width: 250px;
     position: sticky;
     top: 100px;
     z-index: 10;
@@ -8,17 +8,40 @@
     padding: 10px;
     border-radius: 5px;
     margin-left: 50px;
+    border: 1px solid #ddd; /* Add a subtle border */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Soft shadow */
 }
 
-/* Ajuster la largeur du tableau pour éviter qu’il ne touche le TOC */
+/* 🖥 Ensure TOC Doesn't Overlap on Small Screens */
+@media (max-width: 768px) {
+    #TOC {
+        max-width: 100%;
+        position: relative;
+        margin-left: 0;
+        top: 0;
+    }
+}
+
+/* 📊 Improve Table Styling */
 .content table {
-    max-width: 90%; /* Réduire la largeur du tableau */
+    width: 100%; /* Full width inside the content area */
+    max-width: 90%;
     margin-left: auto;
-    margin-right: 50px;
-    overflow-x: auto; /* Ajoute un défilement horizontal si nécessaire */
+    margin-right: auto;
+    overflow-x: auto;
+    border-collapse: collapse;
 }
 
+/* 📋 Make Table More Readable */
+.content table th, .content table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
 
-
+/* 🎨 Alternate Row Colors for Better Readability */
+.content table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
 
 

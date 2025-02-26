@@ -105,5 +105,69 @@
   },
   "daops2.qmd": {
     "daops2.tex": "338e7cd5"
+  },
+  "notebooks/presentation.qmd": {
+    "presentation.html": "04ab72dd",
+    "presentation.tex": "2539c177"
+  },
+  "notebooks/donnees.qmd": {
+    "donnees.html": "2b315f43",
+    "donnees.tex": "cf172b6f"
+  },
+  "notebooks/foret_aleatoire.qmd": {
+    "foret_aleatoire.html": "a6661ce1",
+    "foret_aleatoire.tex": "6ce92ac5"
+  },
+  "notebooks/regression_logistique_ovo.qmd": {
+    "regression_logistique_ovo.html": "be4f4ee8",
+    "regression_logistique_ovo.tex": "b0f49336"
+  },
+  "notebooks/LDA.qmd": {
+    "LDA.html": "81ae0faf",
+    "LDA.tex": "045e3851"
+  },
+  "notebooks/index.qmd": {
+    "index.html": "bfc6ffe8",
+    "index.tex": "1e29eb03"
+  },
+  "notebooks/bayesien_naif.qmd": {
+    "bayesien_naif.html": "0cb14055",
+    "bayesien_naif.tex": "0a16b3fb"
+  },
+  "notebooks/KNN.qmd": {
+    "KNN.html": "3227df85",
+    "KNN.tex": "49850c73"
+  },
+  "notebooks/svm_ova.qmd": {
+    "svm_ova.html": "d15f6093",
+    "svm_ova.tex": "dcdca8f8"
+  },
+  "notebooks/regression_multinomiale.qmd": {
+    "regression_multinomiale.html": "edd8a48d",
+    "regression_multinomiale.tex": "43966dc0"
+  },
+  "notebooks/arbre_decision.qmd": {
+    "arbre_decision.html": "900996f5",
+    "arbre_decision.tex": "be3359b2"
+  },
+  "notebooks/reseau_neurones.qmd": {
+    "reseau_neurones.html": "45f087ab",
+    "reseau_neurones.tex": "67bf859c"
+  },
+  "notebooks/svm_ovo.qmd": {
+    "svm_ovo.html": "ead8cca6",
+    "svm_ovo.tex": "a67f67fa"
+  },
+  "notebooks/regression_logistique_ova.qmd": {
+    "regression_logistique_ova.html": "213d6c0e",
+    "regression_logistique_ova.tex": "874fc747"
+  },
+  "notebooks/QDA.qmd": {
+    "QDA.html": "bad36275",
+    "QDA.tex": "aeda5c13"
+  },
+  "notebooks/conclusions.qmd": {
+    "conclusions.html": "0f3c092d",
+    "conclusions.tex": "1aef047b"
   }
 }

@@ -54,9 +54,9 @@ torch.backends.cudnn.enabled = False
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # 🔄 Chargement des ensembles de données
-train_data = pd.read_csv('covertype_train.csv')
-val_data = pd.read_csv('covertype_val.csv')
-test_data = pd.read_csv('covertype_test.csv')
+train_data = pd.read_csv('../data/covertype_train.csv')
+val_data = pd.read_csv('../data/covertype_val.csv')
+test_data = pd.read_csv('../data/covertype_test.csv')
 
 # 📊 Préparation des données
 X_train, y_train = train_data.drop('Cover_Type', axis=1).values, train_data['Cover_Type'].values - 1

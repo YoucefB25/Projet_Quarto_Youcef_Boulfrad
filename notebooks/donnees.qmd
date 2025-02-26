@@ -47,53 +47,38 @@ L'échantillon obtenu comptera un peu plus de 40 000 individus, dont 60% seront 
 ## Téléchargement et Préparation des Données
 
 ```{python}
+import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# Téléchargement direct des données depuis l'URL
-url = "https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/covtype.data.gz"
+# 📂 Correction du chemin d'accès au fichier dataset
+file_path = "../data/covertype.gz"  # On remonte d'un dossier pour atteindre data/
+
+if not os.path.exists(file_path):
+    raise FileNotFoundError(f"❌ Le fichier {file_path} est introuvable. Vérifiez son emplacement.")
+
+# 🔄 Chargement des données
 column_names = [f'Feature_{i}' for i in range(1, 55)] + ['Cover_Type']
-data = pd.read_csv(url, header=None, names=column_names)
+data = pd.read_csv(file_path, header=None, names=column_names, compression='gzip')
 
-# Définition des taux d'échantillonnage (différent selon les classes)
+# 🔢 Échantillonnage différencié
 sampling_rates = {1: 0.05, 2: 0.05, 3: 0.2, 4: 0.2, 5: 0.2, 6: 0.2, 7: 0.2}
-
-# Échantillonnage différencié par classe
 sampled_data = pd.concat([
     data[data['Cover_Type'] == cls].sample(frac=sampling_rates[cls], random_state=42)
     for cls in data['Cover_Type'].unique()
-])
+]).reset_index(drop=True)
 
-# Réinitialisation des index après échantillonnage
-sampled_data = sampled_data.reset_index(drop=True)
-
-# Affichage des effectifs par classe après échantillonnage
-print("Effectifs par classe après échantillonnage différencié :")
-print(sampled_data['Cover_Type'].value_counts().sort_index())
-
-# Division des données en ensembles d'entraînement, validation et test
+# 📊 Division en train/val/test
 train_data, temp_data = train_test_split(sampled_data, test_size=0.4, random_state=42, stratify=sampled_data['Cover_Type'])
 val_data, test_data = train_test_split(temp_data, test_size=0.5, random_state=42, stratify=temp_data['Cover_Type'])
 
-# Affichage des tailles des ensembles
-print(f"\nTaille des ensembles :")
-print(f"  - Entraînement : {len(train_data)} lignes")
-print(f"  - Validation : {len(val_data)} lignes")
-print(f"  - Test : {len(test_data)} lignes")
+# 📂 Sauvegarde des fichiers dans data/
+train_data.to_csv("../data/covertype_train.csv", index=False)
+val_data.to_csv("../data/covertype_val.csv", index=False)
+test_data.to_csv("../data/covertype_test.csv", index=False)
 
-# Affichage des effectifs par classe dans chaque ensemble
-print("\nEffectifs par classe dans l'ensemble d'entraînement :")
-print(train_data['Cover_Type'].value_counts().sort_index())
+print("✅ Fichiers covertype_train.csv, covertype_val.csv et covertype_test.csv créés avec succès dans data/")
 
-print("\nEffectifs par classe dans l'ensemble de validation :")
-print(val_data['Cover_Type'].value_counts().sort_index())
 
-print("\nEffectifs par classe dans l'ensemble de test :")
-print(test_data['Cover_Type'].value_counts().sort_index())
-
-# Sauvegarder les ensembles en fichiers CSV
-train_data.to_csv('covertype_train.csv', index=False)
-val_data.to_csv('covertype_val.csv', index=False)
-test_data.to_csv('covertype_test.csv', index=False)
 ```
 
