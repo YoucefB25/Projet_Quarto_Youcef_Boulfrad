@@ -1,0 +1,109 @@
+{
+  "regression_logistique_ovo.qmd": {
+    "regression_logistique_ovo.html": "dd5b2373",
+    "regression_logistique_ovo.tex": "cf619f25"
+  },
+  "svm_ova.qmd": {
+    "svm_ova.html": "ca087599",
+    "svm_ova.tex": "3e98660c"
+  },
+  "regression_multinomiale.qmd": {
+    "regression_multinomiale.html": "aa64fe96",
+    "regression_multinomiale.tex": "aab92516"
+  },
+  "svm_ovo.qmd": {
+    "svm_ovo.html": "ae1b027c",
+    "svm_ovo.tex": "1cddf7ab"
+  },
+  "regression_logistique_ova.qmd": {
+    "regression_logistique_ova.html": "6312c59a",
+    "regression_logistique_ova.tex": "be1968b9"
+  },
+  "knn.qmd": {
+    "knn.html": "b0e3bbfc",
+    "knn.tex": "8bc00428"
+  },
+  "arbre_decision.qmd": {
+    "arbre_decision.html": "7013b8e5",
+    "arbre_decision.tex": "48e2d862"
+  },
+  "foret_aleatoire.qmd": {
+    "foret_aleatoire.html": "2e3d261b",
+    "foret_aleatoire.tex": "07a8566b"
+  },
+  "qda_ovo.qmd": {
+    "qda_ovo.html": "43ce4d8a",
+    "qda_ovo.tex": "9cc8c748"
+  },
+  "lda_ova.qmd": {
+    "lda_ova.html": "ed112273",
+    "lda_ova.tex": "1db14023"
+  },
+  "lda_ovo.qmd": {
+    "lda_ovo.html": "2b1a3b51",
+    "lda_ovo.tex": "fac48945"
+  },
+  "qda_ova.qmd": {
+    "qda_ova.html": "4e71012a",
+    "qda_ova.tex": "6612cc2a"
+  },
+  "bayesien_naif.qmd": {
+    "bayesien_naif.html": "97ceb647",
+    "bayesien_naif.tex": "5c6b3591"
+  },
+  "reseau_neurones.qmd": {
+    "reseau_neurones.html": "76661e7b",
+    "reseau_neurones.tex": "07220d4c"
+  },
+  "index.qmd": {
+    "index.html": "d53fe99f",
+    "index.tex": "8e3d5010"
+  },
+  "preparation_donnees_covertype.qmd": {
+    "preparation_donnees_covertype.html": "6309f65e",
+    "preparation_donnees_covertype.tex": "f60867f6"
+  },
+  "about.qmd": {
+    "about.tex": "890501af",
+    "about.html": "45d565bc"
+  },
+  "conclusions.qmd": {
+    "conclusions.html": "8ea92836",
+    "conclusions.tex": "b409f76b"
+  },
+  "QDA.qmd": {
+    "QDA.tex": "28c7cf6f",
+    "QDA.html": "91c441f8"
+  },
+  "donnees.qmd": {
+    "donnees.tex": "54f621b8",
+    "donnees.html": "07d1b151"
+  },
+  "LDA.qmd": {
+    "LDA.tex": "00df5999",
+    "LDA.html": "56bb65b8"
+  },
+  "knn_ova.qmd": {
+    "knn_ova.tex": "36fc2ee2"
+  },
+  "knn_ovo.qmd": {
+    "knn_ovo.tex": "609563e9"
+  },
+  "knn_multiclasse.qmd": {
+    "knn_multiclasse.tex": "a91376af"
+  },
+  "presentation.qmd": {
+    "presentation.tex": "3e32909d",
+    "presentation.html": "e6d6512f"
+  },
+  "KNN.qmd": {
+    "KNN.html": "4b8175ce",
+    "KNN.tex": "860b28c0"
+  },
+  "dataops.qmd": {
+    "dataops.tex": "7be5ada3"
+  },
+  "daops2.qmd": {
+    "daops2.tex": "338e7cd5"
+  }
+}
