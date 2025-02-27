@@ -3,7 +3,7 @@ name: Deploy Quarto Site
 on:
   push:
     branches:
-      - main  # Deploy only when pushing to main
+      - main  # Déploie lorsque l'on push sur main
 
 jobs:
   build-deploy:
@@ -15,8 +15,6 @@ jobs:
 
       - name: ⚙️ Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          version: pre-release  # Get the latest stable version of Quarto
 
       - name: 📦 Install dependencies
         run: pip install -r requirements.txt
@@ -24,12 +22,12 @@ jobs:
       - name: 📝 Install TinyTeX (for PDF rendering)
         run: quarto install tinytex
 
-      - name: ��️ Render Quarto site
+      - name: 🏗️ Render Quarto site
         run: quarto render
 
       - name: 🚀 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site  # Output folder for Quarto
-          keep_files: true
+          publish_dir: _site  # Dossier où Quarto génère le site
+
