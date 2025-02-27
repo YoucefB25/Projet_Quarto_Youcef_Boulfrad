@@ -1,13 +1,3 @@
-name: Build and Deploy Quarto
-
-on:
-  push:
-    branches:
-      - main  # Modifier si besoin
-  pull_request:
-    branches:
-      - main
-
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -26,17 +16,30 @@ jobs:
           sudo apt update
           sudo apt install -y ghostscript texlive-xetex texlive-fonts-recommended texlive-latex-extra
 
+      - name: Verify xelatex installation
+        run: xelatex --version
+
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Cleanup previous builds
+        run: rm -rf notebooks/bayesien_naif_files/
+
       - name: Force figure generation
-        run: quarto render --execute
+        run: quarto render notebooks/bayesien_naif.qmd --execute
 
-      - name: Debug - List generated figures
-        run: ls -R notebooks/bayesien_naif_files/figure-pdf/ || echo "No PDF files found!"
+      - name: Debug - Check if PDF figures exist
+        run: |
+          if [ -d "notebooks/bayesien_naif_files/figure-pdf/" ]; then
+            echo "PDF figures exist:"
+            ls -lh notebooks/bayesien_naif_files/figure-pdf/
+          else
+            echo "No PDF figures found!"
+            exit 1
+          fi
 
-      - name: Render Quarto project
-        run: quarto render --clean
+      - name: Render Quarto project with LaTeX engine
+        run: quarto render --to pdf --pdf-engine=xelatex --execute
 
       - name: Deploy to GitHub Pages
         if: success()
