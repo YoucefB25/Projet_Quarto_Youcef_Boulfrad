@@ -26,7 +26,7 @@ jobs:
         with:
           version: release
 
-      # 📦 Installer les dépendances système (Ajout de texlive-full)
+      # 📦 Installer les dépendances système
       - name: Install system dependencies
         run: sudo apt-get install -y ghostscript texlive-full
 
@@ -42,7 +42,8 @@ jobs:
 
       # 🚀 Exécuter Quarto en mode debug pour générer les figures
       - name: Run Quarto (force execution)
-        run: quarto render --execute --log-level debug --metadata "jupyter: { execute: true }"
+        run: |
+          quarto render --execute --log-level debug
 
       # 📂 Debug: Lister les fichiers de figures PDF générés
       - name: Debug - List generated PDF figures
@@ -52,7 +53,12 @@ jobs:
       # 📝 Vérifier le fichier de log en cas d'échec
       - name: Show LaTeX log if error occurs
         if: failure()
-        run: cat notebooks/bayesien_naif.log || echo "No log file found!"
+        run: |
+          if [ -f notebooks/bayesien_naif.log ]; then
+            cat notebooks/bayesien_naif.log
+          else
+            echo "No log file found!"
+          fi
 
       # 🛠 Supprimer les anciennes figures (si elles causent des problèmes)
       - name: Remove old figure files
