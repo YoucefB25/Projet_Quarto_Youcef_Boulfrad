@@ -29,7 +29,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: 🧹 Clean Quarto cache (avoid stale files)
-        run: quarto clean
+        run: quarto render --clean
 
       - name: 🏗️ Render Quarto site
         run: |
