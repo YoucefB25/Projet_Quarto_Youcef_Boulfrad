@@ -26,40 +26,13 @@ jobs:
         with:
           version: release
 
-      # 📦 Installer TeX Live (sans utiliser tlmgr)
-      - name: Install TeX Live and dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ghostscript texlive-full
-
-      # 🔍 Vérifier si xelatex est installé
-      - name: Check LaTeX installation
-        run: |
-          which xelatex || echo "xelatex NOT found!"
-          xelatex --version || echo "xelatex is NOT installed!"
-
       # 🐍 Installer les dépendances Python
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      # 🔄 Exécuter Quarto en mode debug pour générer les figures (avant LaTeX)
-      - name: Run Quarto (force execution)
-        run: quarto render --execute --log-level debug
-
-      # 📂 Debug: Vérifier les fichiers de figures PDF générés
-      - name: Debug - List generated PDF figures
-        run: |
-          ls -lah notebooks/bayesien_naif_files/figure-pdf/ || echo "No PDF figures found!"
-
-      # 🚨 Supprimer les anciennes figures corrompues si besoin
-      - name: Remove old figure files if needed
-        run: |
-          rm -rf notebooks/bayesien_naif_files/figure-pdf/
-          mkdir -p notebooks/bayesien_naif_files/figure-pdf/
-
-      # 📜 Relancer le rendu Quarto en nettoyant les anciens fichiers
-      - name: Render Quarto project
-        run: quarto render --clean --log-level debug
+      # 🚀 Générer uniquement le HTML pour le déploiement
+      - name: Render Quarto project (HTML only)
+        run: quarto render --to html --log-level debug
 
       # 🚀 Déployer sur GitHub Pages si tout est réussi
       - name: Deploy to GitHub Pages
@@ -67,5 +40,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _site
+          publish_dir: exports/html  # Correspond à l'output-dir défini dans `_quarto.yml`
 
