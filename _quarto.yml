@@ -1,7 +1,7 @@
 project:
   type: website
   title: "Méthodes de classification supervisée"
-  output-dir: "exports/html"  # Les fichiers HTML iront ici
+  output-dir: "exports/html"  # 🔹 Déploiement GitHub Pages uniquement en HTML
 
 format:
   html:
@@ -9,9 +9,9 @@ format:
     css: assets/styles.css
     toc: true
     toc-depth: 2
-    output-dir: "exports/html"  # ⬅️ Ajouter cette ligne pour forcer HTML vers exports/html
+    output-dir: "exports/html"  # 🔹 Forcer l’output HTML vers exports/html
   pdf:
-    output-dir: "exports/pdf"  # ⬅️ Ajouter cette ligne pour forcer PDF vers exports/pdf
+    output-dir: "exports/pdf"  # 🔹 Les fichiers PDF vont ici, mais ne seront pas déployés
     documentclass: article
     keep-tex: true
     number-sections: false
@@ -21,16 +21,15 @@ format:
         \usepackage{fvextra}
         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,breakanywhere=true,commandchars=\\\{\}}
 
-
 execute:
   freeze: auto
-  execute-dir: project  # Run all `.qmd` files from the project root
+  execute-dir: project  # Exécuter tous les `.qmd` depuis la racine du projet
   order: 
     - "notebooks/donnees.qmd"
     - "notebooks/*.qmd"
 
 metadata-files:
-  - _metadata.yml  # (Optional) If you want to include metadata globally for all documents
+  - _metadata.yml  # (Optionnel) Ajoute un fichier de métadonnées global
 
 website:
   page-navigation: true
@@ -72,5 +71,4 @@ website:
         href: notebooks/conclusions.qmd
 
 crossref:
-  chapters: true  # Enables cross-referencing between sections
-
+  chapters: true  # Active les références croisées entre sections

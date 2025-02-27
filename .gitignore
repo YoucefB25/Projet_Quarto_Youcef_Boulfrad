@@ -38,3 +38,5 @@ pip-delete-this-directory.txt
 # Ignorer les fichiers système
 .DS_Store
 Thumbs.db
+
+/.quarto/

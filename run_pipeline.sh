@@ -21,9 +21,9 @@ ls -l exports/html/
 echo "🔍 PDF Files:"
 ls -l exports/pdf/
 
-echo "🌍 Starting local web server on http://localhost:5000"
+echo "🌍 Starting local web server on http://localhost:9005"
 cd exports/html || exit
-python3 -m http.server 5000 &  # Démarre un serveur en arrière-plan
+python3 -m http.server 9005 &  # Démarre un serveur en arrière-plan
 
-echo "✅ Build complete! HTML is now accessible at http://localhost:5000"
+echo "✅ Build complete! HTML is now accessible at http://localhost:9005"
 
