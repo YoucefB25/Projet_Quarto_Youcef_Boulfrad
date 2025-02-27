@@ -26,17 +26,11 @@ jobs:
         with:
           version: release
 
-      # 📦 Installer TeX Live et Ghostscript
-      - name: Install system dependencies
+      # 📦 Installer TeX Live (sans utiliser tlmgr)
+      - name: Install TeX Live and dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ghostscript texlive-full
-
-      # 🔄 Forcer la mise à jour de TeX Live
-      - name: Force TeX Live Update
-        run: |
-          sudo tlmgr update --self || echo "Failed to update tlmgr, continuing..."
-          sudo tlmgr update --all || echo "Failed to update TeX Live packages, continuing..."
 
       # 🔍 Vérifier si xelatex est installé
       - name: Check LaTeX installation
@@ -48,33 +42,20 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      # 🔄 Corriger les permissions des fichiers générés
-      - name: Fix permissions
-        run: chmod -R 777 notebooks/bayesien_naif_files || echo "No permission issue found"
-
-      # 🚀 Exécuter Quarto en mode debug pour générer les figures
+      # 🔄 Exécuter Quarto en mode debug pour générer les figures (avant LaTeX)
       - name: Run Quarto (force execution)
-        run: |
-          quarto render --execute --log-level debug
+        run: quarto render --execute --log-level debug
 
-      # 📂 Debug: Lister les fichiers de figures PDF générés
+      # 📂 Debug: Vérifier les fichiers de figures PDF générés
       - name: Debug - List generated PDF figures
         run: |
           ls -lah notebooks/bayesien_naif_files/figure-pdf/ || echo "No PDF figures found!"
 
-      # 📝 Vérifier le fichier de log en cas d'échec
-      - name: Show LaTeX log if error occurs
-        if: failure()
+      # 🚨 Supprimer les anciennes figures corrompues si besoin
+      - name: Remove old figure files if needed
         run: |
-          if [ -f notebooks/bayesien_naif.log ]; then
-            cat notebooks/bayesien_naif.log
-          else
-            echo "No log file found!"
-          fi
-
-      # 🛠 Supprimer les anciennes figures (si elles causent des problèmes)
-      - name: Remove old figure files
-        run: rm -rf notebooks/bayesien_naif_files/figure-pdf/
+          rm -rf notebooks/bayesien_naif_files/figure-pdf/
+          mkdir -p notebooks/bayesien_naif_files/figure-pdf/
 
       # 📜 Relancer le rendu Quarto en nettoyant les anciens fichiers
       - name: Render Quarto project
