@@ -1,3 +1,13 @@
+name: Build and Deploy Quarto
+
+on:
+  push:
+    branches:
+      - main  # Modifier si besoin
+  pull_request:
+    branches:
+      - main
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -6,41 +16,53 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 📌 Vérification de l'espace disque disponible
+      - name: Check available disk space
+        run: df -h
+
+      # 🛠 Installer Quarto
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
           version: release
 
-      - name: Install system dependencies (LaTeX, Ghostscript)
+      # 📦 Installer les dépendances système (Ajout de texlive-full)
+      - name: Install system dependencies
+        run: sudo apt-get install -y ghostscript texlive-full
+
+      # 🔍 Vérifier si xelatex est installé
+      - name: Check LaTeX installation
         run: |
-          sudo apt update
-          sudo apt install -y ghostscript texlive-xetex texlive-fonts-recommended texlive-latex-extra
+          which xelatex || echo "xelatex NOT found!"
+          xelatex --version || echo "xelatex is NOT installed!"
 
-      - name: Verify xelatex installation
-        run: xelatex --version
-
+      # 🐍 Installer les dépendances Python
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Cleanup previous builds
-        run: rm -rf notebooks/bayesien_naif_files/
+      # 🚀 Exécuter Quarto en mode debug pour générer les figures
+      - name: Run Quarto (force execution)
+        run: quarto render --execute --log-level debug --metadata "jupyter: { execute: true }"
 
-      - name: Force figure generation
-        run: quarto render notebooks/bayesien_naif.qmd --execute
-
-      - name: Debug - Check if PDF figures exist
+      # 📂 Debug: Lister les fichiers de figures PDF générés
+      - name: Debug - List generated PDF figures
         run: |
-          if [ -d "notebooks/bayesien_naif_files/figure-pdf/" ]; then
-            echo "PDF figures exist:"
-            ls -lh notebooks/bayesien_naif_files/figure-pdf/
-          else
-            echo "No PDF figures found!"
-            exit 1
-          fi
+          ls -lah notebooks/bayesien_naif_files/figure-pdf/ || echo "No PDF figures found!"
 
-      - name: Render Quarto project with LaTeX engine
-        run: quarto render --to pdf --pdf-engine=xelatex --execute
+      # 📝 Vérifier le fichier de log en cas d'échec
+      - name: Show LaTeX log if error occurs
+        if: failure()
+        run: cat notebooks/bayesien_naif.log || echo "No log file found!"
 
+      # 🛠 Supprimer les anciennes figures (si elles causent des problèmes)
+      - name: Remove old figure files
+        run: rm -rf notebooks/bayesien_naif_files/figure-pdf/
+
+      # 📜 Relancer le rendu Quarto en nettoyant les anciens fichiers
+      - name: Render Quarto project
+        run: quarto render --clean --log-level debug
+
+      # 🚀 Déployer sur GitHub Pages si tout est réussi
       - name: Deploy to GitHub Pages
         if: success()
         uses: peaceiris/actions-gh-pages@v3
