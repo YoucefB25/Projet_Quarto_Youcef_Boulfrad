@@ -1,1 +1,40 @@
 
+# Ignorer les fichiers générés par Quarto
+*.html
+*.pdf
+*.tex
+*_files/
+_site/
+exports/
+
+# Ignorer les fichiers de logs et temporaires
+*.log
+*.aux
+*.out
+*.toc
+*.lof
+*.lot
+
+# Ignorer les fichiers Python compilés
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorer les environnements virtuels
+venv/
+.env/
+*.env
+
+# Ignorer les fichiers de dépendances installées par pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignorer les fichiers de configuration spécifiques aux IDE
+.vscode/
+.idea/
+*.iml
+
+# Ignorer les fichiers système
+.DS_Store
+Thumbs.db
