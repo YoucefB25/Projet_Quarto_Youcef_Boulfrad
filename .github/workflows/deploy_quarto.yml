@@ -39,6 +39,7 @@ jobs:
         if: success()
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: exports/html  # Correspond à l'output-dir défini dans `_quarto.yml`
+  		personal_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  		publish_dir: exports/html
+
 
