@@ -1,44 +1,45 @@
-name: Deploy Quarto Site
+name: Build and Deploy Quarto
 
 on:
   push:
     branches:
-      - main  # Déploie lorsque l'on push sur main
+      - main  # Modifier si besoin
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🛎️ Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: ⚙️ Set up Quarto
+      - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: release
 
-      - name: 📦 Install TinyTeX (for LaTeX and PDF rendering)
-        run: |
-          quarto install tinytex
-          echo "$HOME/.TinyTeX/bin/x86_64-linux" >> $GITHUB_PATH
-          export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
-          tlmgr path add
-          tlmgr update --self --all
-          tlmgr install fvextra standalone preview xcolor hyperref
+      - name: Install system dependencies
+        run: sudo apt-get install -y ghostscript texlive-extra-utils
 
-      - name: 📦 Install Python dependencies
+      - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: 🧹 Clean Quarto cache (avoid stale files)
+      - name: Force figure generation
+        run: quarto render --execute
+
+      - name: Debug - List generated figures
+        run: ls -R notebooks/bayesien_naif_files/figure-pdf/ || echo "No PDF files found!"
+
+      - name: Render Quarto project
         run: quarto render --clean
 
-      - name: 🏗️ Render Quarto site
-        run: |
-          ls -R notebooks/  # Vérification des fichiers avant rendu
-          quarto render --execute
-
-      - name: 🚀 Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: success()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _site  # Dossier où Quarto génère le site
+          publish_dir: _site
 
