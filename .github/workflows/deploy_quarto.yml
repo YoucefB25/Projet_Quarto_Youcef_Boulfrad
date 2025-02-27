@@ -3,7 +3,7 @@ name: Build and Deploy Quarto
 on:
   push:
     branches:
-      - main  # Modifier si besoin
+      - main
   pull_request:
     branches:
       - main
@@ -26,9 +26,17 @@ jobs:
         with:
           version: release
 
-      # 📦 Installer les dépendances système
+      # 📦 Installer TeX Live et Ghostscript
       - name: Install system dependencies
-        run: sudo apt-get install -y ghostscript texlive-full
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ghostscript texlive-full
+
+      # 🔄 Forcer la mise à jour de TeX Live
+      - name: Force TeX Live Update
+        run: |
+          sudo tlmgr update --self || echo "Failed to update tlmgr, continuing..."
+          sudo tlmgr update --all || echo "Failed to update TeX Live packages, continuing..."
 
       # 🔍 Vérifier si xelatex est installé
       - name: Check LaTeX installation
@@ -39,6 +47,10 @@ jobs:
       # 🐍 Installer les dépendances Python
       - name: Install Python dependencies
         run: pip install -r requirements.txt
+
+      # 🔄 Corriger les permissions des fichiers générés
+      - name: Fix permissions
+        run: chmod -R 777 notebooks/bayesien_naif_files || echo "No permission issue found"
 
       # 🚀 Exécuter Quarto en mode debug pour générer les figures
       - name: Run Quarto (force execution)
