@@ -15,7 +15,7 @@ jobs:
 
       - name: ⚙️ Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-     
+
       - name: 📦 Install TinyTeX (for LaTeX and PDF rendering)
         run: |
           quarto install tinytex
@@ -23,13 +23,18 @@ jobs:
           export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
           tlmgr path add
           tlmgr update --self --all
-          tlmgr install fvextra
+          tlmgr install fvextra standalone preview xcolor hyperref
 
       - name: 📦 Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: 🧹 Clean Quarto cache (avoid stale files)
+        run: quarto clean
+
       - name: 🏗️ Render Quarto site
-        run: quarto render
+        run: |
+          ls -R notebooks/  # Vérification des fichiers avant rendu
+          quarto render --execute
 
       - name: 🚀 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
