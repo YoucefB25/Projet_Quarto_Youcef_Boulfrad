@@ -16,14 +16,17 @@ jobs:
       - name: ⚙️ Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
      
-      - name: 📦 Install LaTeX dependencies
-        run: quarto install tinytex && tlmgr install fvextra
+      - name: 📦 Install TinyTeX (for LaTeX and PDF rendering)
+        run: |
+          quarto install tinytex
+          echo "$HOME/.TinyTeX/bin/x86_64-linux" >> $GITHUB_PATH
+          export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
+          tlmgr path add
+          tlmgr update --self --all
+          tlmgr install fvextra
 
-      - name: 📦 Install dependencies
+      - name: 📦 Install Python dependencies
         run: pip install -r requirements.txt
-
-      - name: 📝 Install TinyTeX (for PDF rendering)
-        run: quarto install tinytex
 
       - name: 🏗️ Render Quarto site
         run: quarto render
